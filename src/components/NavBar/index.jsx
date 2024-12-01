@@ -5,10 +5,10 @@ const NavBar = forwardRef (({className}, ref) => {
   return (
     <nav ref={ref} className = {`${className} bg-blue-400`}>
       <ul>
-        <li><Link href ="">Home</Link></li>
-        <li><Link href ="">Quotations</Link></li>
-        <li><Link href ="">Services</Link></li>
-        <li><Link href ="">Users</Link></li>
+        <li><Link href ="/home">Home</Link></li>
+        <li><Link href ="/quotations">Quotations</Link></li>
+        <li><Link href ="/services">Services</Link></li>
+        <li><Link href ="/users">Users</Link></li>
       </ul>
     </nav>
   )
