@@ -9,11 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
+    "clsx": "^2.1.1",
+    "fabric": "^6.5.3",
     "jose": "^5.9.6",
     "jsonwebtoken": "^9.0.2",
     "next": "15.0.3",
     "react": "19.0.0-rc-66855b96-20241106",
-    "react-dom": "19.0.0-rc-66855b96-20241106"
+    "react-dom": "19.0.0-rc-66855b96-20241106",
+    "use-debounce": "^10.0.4",
+    "zod": "^3.24.1"
   },
   "devDependencies": {
     "eslint": "^8",
