@@ -6,8 +6,6 @@ import CreateDocForm from "@/app/ui/documents/create-form";
 import MainComponent from "@/app/ui/documents/main-component";
 import DocumentForm from "@/app/ui/documents/doc-form";
 import { getSession } from "@/app/lib/session";
-import DocumentForm from "@/app/ui/documents/doc-form";
-import { getSession } from "@/app/lib/session";
 export const metadata = {
   title: "Create Document",
 };
