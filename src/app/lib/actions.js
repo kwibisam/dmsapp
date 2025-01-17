@@ -4,6 +4,7 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSession, deleteSession, getSession } from "./session";
+import { setBearerToken } from "./axios";
 
 // const FormSchema = z.object({
 //   id: z.string(),
@@ -50,7 +51,46 @@ export async function UpdateDocument(id, prevState, formData) {
 }
 
 export async function deleteDocument(id) {
+  console.log("the id is: ", id)
+  const session = await getSession()
+  const token = session?.token
+  const response = await fetch(`http://127.0.0.1:8000/api/documents/${id}`, {
+    method: 'DELETE',
+    headers: {
+      "Authorization": `Bearer ${token}`,
+      "Content-Type": "application/json"
+    }
+  });
+
+  if (!response.ok) {
+    return "delete failed"
+  }
+
   revalidatePath("/dashboard/documents");
+  // redirect('/dashboard/documents')
+}
+
+export async function deleteDocumentById(prevState, formData) {
+  const id = formData.get('id')
+  try {
+    const session = await getSession()
+    const response = await fetch(`http://127.0.0.1:8000/api/documents/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Authorization': `Bearer ${session.token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+  } catch (error) {
+    console.log("error: ", error)
+    return "fatal error"
+  }
+
+  redirect('/dashboard/documents')
 }
 
 export async function authenticate(prevState, formData) {
@@ -58,34 +98,39 @@ export async function authenticate(prevState, formData) {
   try {
     //send login credentials to api
     const { email, password } = Object.fromEntries(formData.entries());
-    const response = await fetch("http://localhost:8000/api/login", {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
-    });
+    const response = await fetch("http://127.0.0.1:8000/api/login", {
+      const response = await fetch("http://127.0.0.1:8000/api/login", {
+        method: "post",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
 
-    if(!response.ok) {
-
-      if(response.status === 400) {
-        const err = await response.json()
-        console.log(err)
-        return `${err.message}`
-      }
-
-      throw new Error(`Error: ${response.statusText}`);
+      if(!response.ok) {
+        console.log("response ", response.statusText)
+    if (response.status === 400) {
+      const err = await response.json()
+      console.log(err)
+      return `${err.message}`
     }
-    
-    const data = await response.json();
-    const {token} = data
-    await createSession(token)
-  } catch (error) {
-    console.log(error);
-    return `Bad request: ${error}`;
+
+    throw new Error(`Error: ${response.statusText}`);
   }
-  redirect('/dashboard')
+
+
+    const data = await response.json();
+  const { token } = data
+  setBearerToken(token)
+  console.log("response data ", data)
+  await createSession(token)
+} catch (error) {
+  console.log(error);
+  return `Bad request: ${error}`;
+}
+console.log("login was successful redirecting user to dashboard...")
+redirect('/dashboard')
 }
 
 
@@ -94,39 +139,41 @@ export async function demo(formData) {
   console.log("form data", formData)
 }
 
-export async function  logout(prevState, formData) {
-  try {
+export async function logout(prevState, formData) {
+  export async function logout(prevState, formData) {
+    try {
 
-    const session =  await getSession()
-    await fetch('http://localhost:8000/api/logout', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${session.token}`,
-        'Content-Type': 'application/json'
-      }
-    });
-  } catch (error) {
-    console.log("error: ", error)
-    return "fatal error"
+      const session = await getSession()
+      const session = await getSession()
+      await fetch('http://localhost:8000/api/logout', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${session.token}`,
+          'Content-Type': 'application/json'
+        }
+      });
+    } catch (error) {
+      console.log("error: ", error)
+      return "fatal error"
+    }
+
+    await deleteSession()
+    redirect('/login')
   }
+  export async function createCustomer(prevState, formData) {
+    try {
+      const name = formData.get("name");
+      const email = formData.get("email");
+      const phone = formData.get("phone");
+      const address = formData.get("address");
+      const tags = formData.get("tags");
+    } catch (error) {
+      return {
+        message: "some error occured creating the customer",
+        error: error,
+      };
+    }
 
-  await deleteSession()
-  redirect('/login')
-}
-export async function createCustomer(prevState, formData) {
-  try {
-    const name = formData.get("name");
-    const email = formData.get("email");
-    const phone = formData.get("phone");
-    const address = formData.get("address");
-    const tags = formData.get("tags");
-  } catch (error) {
-    return {
-      message: "some error occured creating the customer",
-      error: error,
-    };
+    // revalidatePath("/dashboard/customers")
+    // redirect("/dashboard/customers")
   }
-
-  // revalidatePath("/dashboard/customers")
-  // redirect("/dashboard/customers")
-}

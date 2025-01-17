@@ -1,7 +1,8 @@
 import { getSession } from "./session";
 import { formatCurrency } from "./utils";
 
-export async function fetchLatestDocuments() {}
+export async function fetchLatestDocuments() { }
+export async function fetchLatestDocuments() { }
 
 export async function fetchCardData() {
   //   try {
@@ -49,42 +50,69 @@ export async function fetchFilteredDocuments(query, currentPage) {
       status: "Overdue",
     },
   ];
-  
+
+
   return documents
 }
 
 export async function fetchAllDocuments(currentPage) {
+  //lljkjl
   try {
     const session = await getSession()
-    const response = await fetch("http://localhost:8000/api/documents", {
+    const response = await fetch("http://127.0.0.1:8000/api/documents", {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${session.token}`,
+        "Authorization": `Bearer ${token}`,
         "Content-Type": "application/json"
       }
-    }) 
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-
-    const result = await response.json()
-    console.log("documents: ", result)
-    return result.data
-  } catch (error) {
-    console.error('Fetch error:', error);
-    throw new Error('Failed to fetch documents.');
+    })
+  })
+  if (!response.ok) {
+    throw new Error(response.statusText)
   }
+
+  const result = await response.json()
+  return result.data
+} catch (error) {
+  console.error('Fetch error:', error);
+  // throw new Error('Failed to fetch documents.');
+}
 }
 
 export async function fetchDocumentsPages(query) {
-   // Generate a random integer between 1 and 10
+  // Generate a random integer between 1 and 10
+  // Generate a random integer between 1 and 10
   //  const randomValue = Math.floor(Math.random() * 10) + 1;
-   return 1;
+  return 1;
+  return 1;
 }
 
-export async function fetchDocumentsById(id) {}
+export async function fetchDocumentById(id) {
+  try {
+    const session = await getSession()
+    const response = await fetch(`http://127.0.0.1:8000/api/documents/${id}`, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${session.token}`,
+        'Content-Type': 'application/json'
+      }
+    });
 
-export async function fetchCustomers() {}
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const data = await response.json();
+    console.log("fetchById: ", data)
+    return data.data
+  } catch (error) {
+    console.log("error: ", error)
+    return false
+  }
+
+}
+
+
+export async function fetchCustomers() { }
 
 export async function fetchFilteredCustomers(query) {
   // Generate 5 random customers

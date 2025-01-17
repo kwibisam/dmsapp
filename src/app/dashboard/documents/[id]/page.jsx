@@ -1,47 +1,71 @@
+import { getSession } from "@/app/lib/session";
+import { formatDateToLocal } from "@/app/lib/utils";
+import DeleteDocButton from "@/app/ui/documents/delete-doc-btn";
+
 import React from "react";
+import FilePreview from "@/app/ui/documents/file-preview";
+import Breadcrumbs from "@/app/ui/documents/breadcrumb";
+import { Button } from "@/app/ui/button";
+import Link from "next/link";
+import EditMetaButton from "@/app/ui/documents/edit-meta-btn";
+const DocumentDetails = async ({ params }) => {
+  // const docId = params.id;
+  const { id: docId } = await params; // Await params here
+  const session = await getSession();
+  const token = session?.token;
+  const document = await fetch(`http://127.0.0.1:8000/api/documents/${docId}`, {
+    method: "GET",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  }).then((res) => res.json().then((data) => data.data));
 
-const DocumentDetails = () => {
-  const document = {
-    title: "Demo Document",
-    type: "Quotation",
-    client: "Demo Client",
-    uploadDate: "2024-12-16",
-    documentUrl: "/demo.pdf",
-    version: "v1.0",
-    tags: ["Finance", "Quotation"],
-    uploadedBy: "John Doe",
-  };
-
-  const {
-    title,
-    type,
-    client,
-    uploadDate,
-    documentUrl,
-    version,
-    tags,
-    uploadedBy,
-  } = document;
-
+  const content = JSON.parse(document.content);
+  console.log("document content: ", document.content);
+  console.log("document content object: ", content);
   return (
     <div className="max-w-4xl mx-auto p-6">
+      <Breadcrumbs
+        breadcrumbs={[
+          { label: "Documents", href: "/dashboard/documents" },
+          {
+            label: `${document.title}`,
+            href: `/dashboard/documents/${document.id}`,
+            active: true,
+          },
+        ]}
+      />
       {/* Page Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">{title}</h1>
         {/* Action Buttons */}
         <div className="flex space-x-4">
-          <button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
+          <Button className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600">
             Download
-          </button>
-          <button className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200">
-            Edit
-          </button>
-          <button className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600">
-            Delete
-          </button>
-          <button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
+          </Button>
+
+          {!document.content && (
+            <Button className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200">
+              <Link href={`${docId}/edit`}>Edit</Link>
+            </Button>
+          )}
+          {document.content && (
+            <>
+              <Button className="bg-gray-100 text-gray-800 px-4 py-2 rounded-lg hover:bg-gray-200">
+                <Link href={`/dashboard/documents/create/${docId}`}>
+                  Update Content
+                </Link>
+              </Button>
+              <EditMetaButton document={document} token={token} />
+            </>
+          )}
+
+          {/* <DeleteDocument id={docId} /> */}
+          <DeleteDocButton documentId={docId} />
+
+          <Button className="bg-green-500 text-white px-4 py-2 rounded-lg hover:bg-green-600">
             Share
-          </button>
+          </Button>
         </div>
       </div>
 
@@ -51,46 +75,53 @@ const DocumentDetails = () => {
           <h2 className="text-lg font-semibold mb-4 border-b pb-2">Details</h2>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <p className="text-sm text-gray-500">Type</p>
-              <p className="text-base font-medium">{type}</p>
-            </div>
-            <div>
-              <p className="text-sm text-gray-500">Client</p>
-              <p className="text-base font-medium">{client}</p>
-            </div>
-            <div>
               <p className="text-sm text-gray-500">Uploaded By</p>
-              <p className="text-base font-medium">{uploadedBy}</p>
+              <p className="text-base font-medium">{document.author}</p>
             </div>
             <div>
               <p className="text-sm text-gray-500">Upload Date</p>
-              <p className="text-base font-medium">{uploadDate}</p>
+              <p className="text-base font-medium">
+                {formatDateToLocal(document.created_at)}
+              </p>
             </div>
-            <div>
-              <p className="text-sm text-gray-500">Version</p>
-              <p className="text-base font-medium">{version}</p>
-            </div>
+
             <div>
               <p className="text-sm text-gray-500">Tags</p>
-              <p className="text-base font-medium">{tags.join(", ")}</p>
+              <p className="text-base font-medium">
+                {document.tags.join(", ")}
+              </p>
             </div>
           </div>
         </section>
 
         {/* Document Preview Section */}
-        <section>
+        {/* <section>
           <h2 className="text-lg font-semibold mb-4 border-b pb-2">Preview</h2>
           <div className="border rounded-lg overflow-hidden">
-            {documentUrl.endsWith(".pdf") ? (
+            {document.path !== null && document.path.endsWith(".pdf") ? (
               <embed
-                src={documentUrl}
+                src={document.path}
                 width="100%"
                 height="400px"
                 type="application/pdf"
               />
             ) : (
-              <p className="p-4 text-gray-600">Preview not available for this file type.</p>
+              <p className="p-4 text-gray-600">
+                Preview not available for this file type.
+              </p>
             )}
+          </div>
+        </section> */}
+        <section>
+          <h2 className="text-lg font-semibold mb-4 border-b pb-2">Preview</h2>
+          <div className="border rounded-lg overflow-hidden">
+            <FilePreview
+              content={content}
+              filePath={document.path}
+              width="100%"
+              height="400px"
+              fallbackMessage="Preview not available for this file type."
+            />
           </div>
         </section>
       </div>

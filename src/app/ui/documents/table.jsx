@@ -1,12 +1,11 @@
 import Image from "next/image";
 import { UpdateDocument, DeleteDocument } from "@/app/ui/documents/buttons";
-import DocumentStatus from "./status";
 import { formatDateToLocal, formatCurrency } from "@/app/lib/utils";
 import { fetchAllDocuments, fetchFilteredDocuments } from "@/app/lib/data";
+import Link from "next/link";
 export default async function DocumentsTable({ query, currentPage }) {
   // const documents = await fetchFilteredDocuments(query, currentPage);
   const documents = await fetchAllDocuments();
-  console.log("documents from table component: ", documents);
 
   return (
     <div className="mt-6 flow-root">
@@ -30,7 +29,7 @@ export default async function DocumentsTable({ query, currentPage }) {
                       />
                       <p>{document.title}</p>
                     </div>
-                    <p className="text-sm text-gray-500">{document.user_id}</p>
+                    <p className="text-sm text-gray-500">{document.author}</p>
                   </div>
                 </div>
                 <div className="flex w-full items-center justify-between pt-4">
@@ -77,11 +76,13 @@ export default async function DocumentsTable({ query, currentPage }) {
                         height={28}
                         alt={`${document.title}' thumbnail`}
                       />
-                      <p>{document.title}</p>
+                      <Link href={`documents/${document.id}`}>
+                        {document.title}
+                      </Link>
                     </div>
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
-                    {document.user_id}
+                    {document.author}
                   </td>
                   <td className="whitespace-nowrap px-3 py-3">
                     {formatDateToLocal(document.created_at)}
