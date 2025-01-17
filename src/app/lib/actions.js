@@ -1,27 +1,10 @@
 "use server";
 
-import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSession, deleteSession, getSession } from "./session";
 import { setBearerToken } from "./axios";
 
-// const FormSchema = z.object({
-//   id: z.string(),
-//   customerId: z.string({
-//     invalid_type_error: 'Please select a customer.',
-//   }),
-//   amount: z.coerce
-//     .number()
-//     .gt(0, { message: 'Please enter an amount greater than $0.' }),
-//   status: z.enum(['pending', 'paid'], {
-//     invalid_type_error: 'Please select an invoice status.',
-//   }),
-//   date: z.string(),
-// });
-
-// const CreateInvoice = FormSchema.omit({ id: true, date: true });
-// const UpdateInvoice = FormSchema.omit({ date: true, id: true });
 
 export async function addDocument(prevState, formData) {
 
@@ -99,38 +82,37 @@ export async function authenticate(prevState, formData) {
     //send login credentials to api
     const { email, password } = Object.fromEntries(formData.entries());
     const response = await fetch("http://127.0.0.1:8000/api/login", {
-      const response = await fetch("http://127.0.0.1:8000/api/login", {
-        method: "post",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ email, password }),
-      });
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password }),
+    });
 
 
-      if(!response.ok) {
-        console.log("response ", response.statusText)
-    if (response.status === 400) {
-      const err = await response.json()
-      console.log(err)
-      return `${err.message}`
+    if (!response.ok) {
+      console.log("response ", response.statusText)
+      if (response.status === 400) {
+        const err = await response.json()
+        console.log(err)
+        return `${err.message}`
+      }
+
+      throw new Error(`Error: ${response.statusText}`);
     }
-
-    throw new Error(`Error: ${response.statusText}`);
-  }
 
 
     const data = await response.json();
-  const { token } = data
-  setBearerToken(token)
-  console.log("response data ", data)
-  await createSession(token)
-} catch (error) {
-  console.log(error);
-  return `Bad request: ${error}`;
-}
-console.log("login was successful redirecting user to dashboard...")
-redirect('/dashboard')
+    const { token } = data
+    setBearerToken(token)
+    console.log("response data ", data)
+    await createSession(token)
+  } catch (error) {
+    console.log(error);
+    return `Bad request: ${error}`;
+  }
+  console.log("login was successful redirecting user to dashboard...")
+  redirect('/dashboard')
 }
 
 
@@ -140,40 +122,38 @@ export async function demo(formData) {
 }
 
 export async function logout(prevState, formData) {
-  export async function logout(prevState, formData) {
-    try {
+  try {
 
-      const session = await getSession()
-      const session = await getSession()
-      await fetch('http://localhost:8000/api/logout', {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${session.token}`,
-          'Content-Type': 'application/json'
-        }
-      });
-    } catch (error) {
-      console.log("error: ", error)
-      return "fatal error"
-    }
-
-    await deleteSession()
-    redirect('/login')
+    const session = await getSession()
+    await fetch('http://localhost:8000/api/logout', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${session.token}`,
+        'Content-Type': 'application/json'
+      }
+    });
+  } catch (error) {
+    console.log("error: ", error)
+    return "fatal error"
   }
-  export async function createCustomer(prevState, formData) {
-    try {
-      const name = formData.get("name");
-      const email = formData.get("email");
-      const phone = formData.get("phone");
-      const address = formData.get("address");
-      const tags = formData.get("tags");
-    } catch (error) {
-      return {
-        message: "some error occured creating the customer",
-        error: error,
-      };
-    }
 
-    // revalidatePath("/dashboard/customers")
-    // redirect("/dashboard/customers")
+  await deleteSession()
+  redirect('/login')
+}
+export async function createCustomer(prevState, formData) {
+  try {
+    const name = formData.get("name");
+    const email = formData.get("email");
+    const phone = formData.get("phone");
+    const address = formData.get("address");
+    const tags = formData.get("tags");
+  } catch (error) {
+    return {
+      message: "some error occured creating the customer",
+      error: error,
+    };
   }
+
+  // revalidatePath("/dashboard/customers")
+  // redirect("/dashboard/customers")
+}
