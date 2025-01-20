@@ -1,44 +1,41 @@
-import { NextResponse } from 'next/server'
-import { decrypt } from '@/app/lib/session'
-import { cookies } from 'next/headers'
+import { NextResponse } from 'next/server';
+import { decrypt } from '@/app/lib/session';
+import { cookies } from 'next/headers';
 
-
-// 1. Specify protected and public routes
-const protectedRoutes = ['/dashboard', '/dashboard/documents', '/dashboard/customers',]
-const publicRoutes = ['/sign-up', '/login', '/']
-
+async function getSession(req) {
+  const cookie = (await cookies()).get('session')?.value;
+  return decrypt(cookie);
+}
 
 export default async function middleware(req) {
-  // 2. Check if the current route is protected or public
-  const path = req.nextUrl.pathname
-  const isProtectedRoute = protectedRoutes.includes(path)
-  const isPublicRoute = publicRoutes.includes(path)
+  const path = req.nextUrl.pathname;
+  const session = await getSession(req);
 
+  // Check if the route is protected (starts with /dashboard)
+  const isProtectedRoute = path.startsWith('/dashboard');
 
-  // 3. Decrypt the session from the cookie
-  const cookie = (await cookies()).get('session')?.value
-  const session = await decrypt(cookie)
-  // 5. Redirect to /login if the user is not authenticated
+  // Check if the route is public
+  const publicRoutes = ['/sign-up', '/login', '/'];
+  const isPublicRoute = publicRoutes.includes(path);
+
+  // Redirect to /login if accessing a protected route without a valid session
   if (isProtectedRoute && !session?.token) {
-    return NextResponse.redirect(new URL('/login', req.nextUrl))
+    return NextResponse.redirect(new URL('/login', req.nextUrl));
   }
 
-
-  // 6. Redirect to /dashboard if the user is authenticated
+  // Redirect to /dashboard if accessing a public route while logged in
   if (
     isPublicRoute &&
     session?.token &&
-    !req.nextUrl.pathname.startsWith('/dashboard')
+    !path.startsWith('/dashboard')
   ) {
-    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl));
   }
 
-
-  return NextResponse.next()
+  // Proceed to the requested route
+  return NextResponse.next();
 }
 
-
-// Routes Middleware should not run on
 export const config = {
   matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
-}
+};

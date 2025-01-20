@@ -22,6 +22,65 @@ export async function addDocument(prevState, formData) {
   redirect("/dashboard/documents");
 }
 
+export async function createDocument(prevState, formData) {
+  let document = null
+  try {
+    const data = {
+      title: formData.get('title'),
+      tags: formData.getAll('tag').join(),
+      content: ""
+    }
+
+    const session = await getSession()
+    const response = await fetch(`http://127.0.0.1:8000/api/documents`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${session.token}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    const result = await response.json()
+    document = result.data
+
+  } catch (error) {
+    return `Error: Failed to add document. ${error}`
+  }
+
+  redirect(`/dashboard/documents/${document.id}`)
+}
+
+export async function updateDocContent(id, outputData) {
+  console.log("here is the data: ", outputData)
+  const session = await getSession()
+  const token = session?.token
+  try {
+    const data = {
+      content: outputData
+    }
+    console.log("stringfied data: ", JSON.stringify(data))
+    const response = await fetch(`http://127.0.0.1:8000/api/documents/${id}`, {
+      method: 'PUT',
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+
+    if (!response.ok) {
+      throw new Error(response.statusText)
+    }
+    return true
+  } catch (error) {
+    return false
+  }
+}
+
 export async function UpdateDocument(id, prevState, formData) {
   try {
     console.log("update document");
@@ -156,4 +215,46 @@ export async function createCustomer(prevState, formData) {
 
   // revalidatePath("/dashboard/customers")
   // redirect("/dashboard/customers")
+}
+
+
+export async function register(prevState, formData) {
+  'use server'
+  try {
+    //send login credentials to api
+    const { email, password, name } = Object.fromEntries(formData.entries());
+    const response = await fetch("http://127.0.0.1:8000/api/register", {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ email, password, name }),
+    });
+
+
+    if (!response.ok) {
+      console.log("response ", response.statusText)
+      if (response.status >= 400) {
+        const err = await response.json()
+        console.log(err)
+        return `${err.message}`
+      }
+
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+
+    const data = await response.json();
+    const { token } = data
+    setBearerToken(token)
+    await createSession(token)
+  } catch (error) {
+    console.log(error);
+    return `Bad request: ${error}`;
+  }
+  redirect('/dashboard')
+}
+export async function init() {
+
+  return true
 }
