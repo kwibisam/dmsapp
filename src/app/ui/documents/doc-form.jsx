@@ -49,7 +49,7 @@ const DocumentForm = ({ initialData = null, token }) => {
         alert("Document updated successfully");
       } else {
         // Create operation
-        const response = await fetch(`http://127.0.0.1:8000/api/documents`, {
+        const response = await fetch(`http://api.dms.zamnet.zm/api/documents`, {
           method: "POST",
           headers: {
             Authorization: `Bearer ${token}`,

@@ -9,7 +9,7 @@ export async function fetchAllDocuments(currentPage) {
   try {
     const session = await getSession()
     const token = session?.token
-    const response = await fetch("http://127.0.0.1:8000/api/documents", {
+    const response = await fetch("http://api.dms.zamnet.zm/api/documents", {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
@@ -39,7 +39,7 @@ export async function fetchDocumentsPages(query) {
 export async function fetchDocumentById(id) {
   try {
     const session = await getSession()
-    const response = await fetch(`http://127.0.0.1:8000/api/documents/${id}`, {
+    const response = await fetch(`http://api.dms.zamnet.zm/api/documents/${id}`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${session.token}`,

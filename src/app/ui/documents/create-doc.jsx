@@ -27,7 +27,7 @@ const CreateDoc = ({ token }) => {
     const data = new FormData();
     data.append("title", formData.title);
     data.append("tags", "1,2,3");
-    const response = await fetch("http://127.0.0.1:8000/api/documents/", {
+    const response = await fetch("http://api.dms.zamnet.zm/api/documents/", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${token}`,

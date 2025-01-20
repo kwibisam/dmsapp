@@ -32,7 +32,7 @@ export async function createDocument(prevState, formData) {
     }
 
     const session = await getSession()
-    const response = await fetch(`http://127.0.0.1:8000/api/documents`, {
+    const response = await fetch(`http://api.dms.zamnet.zm/api/documents`, {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${session.token}`,
@@ -51,7 +51,7 @@ export async function createDocument(prevState, formData) {
     return `Error: Failed to add document. ${error}`
   }
 
-  redirect(`/dashboard/documents/${document.id}`)
+  redirect(`/dashboard/documents/${document.id}?new=true`)
 }
 
 export async function updateDocContent(id, outputData) {
@@ -63,7 +63,7 @@ export async function updateDocContent(id, outputData) {
       content: outputData
     }
     console.log("stringfied data: ", JSON.stringify(data))
-    const response = await fetch(`http://127.0.0.1:8000/api/documents/${id}`, {
+    const response = await fetch(`http://api.dms.zamnet.zm/api/documents/${id}`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -96,7 +96,7 @@ export async function deleteDocument(id) {
   console.log("the id is: ", id)
   const session = await getSession()
   const token = session?.token
-  const response = await fetch(`http://127.0.0.1:8000/api/documents/${id}`, {
+  const response = await fetch(`http://api.dms.zamnet.zm/api/documents/${id}`, {
     method: 'DELETE',
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -116,7 +116,7 @@ export async function deleteDocumentById(prevState, formData) {
   const id = formData.get('id')
   try {
     const session = await getSession()
-    const response = await fetch(`http://127.0.0.1:8000/api/documents/${id}`, {
+    const response = await fetch(`http://api.dms.zamnet.zm/api/documents/${id}`, {
       method: 'DELETE',
       headers: {
         'Authorization': `Bearer ${session.token}`,
@@ -140,7 +140,7 @@ export async function authenticate(prevState, formData) {
   try {
     //send login credentials to api
     const { email, password } = Object.fromEntries(formData.entries());
-    const response = await fetch("http://127.0.0.1:8000/api/login", {
+    const response = await fetch("http://api.dms.zamnet.zm/api/login", {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -184,7 +184,7 @@ export async function logout(prevState, formData) {
   try {
 
     const session = await getSession()
-    await fetch('http://localhost:8000/api/logout', {
+    await fetch('http://api.dms.zamnet.zm/api/logout', {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${session.token}`,
@@ -223,7 +223,7 @@ export async function register(prevState, formData) {
   try {
     //send login credentials to api
     const { email, password, name } = Object.fromEntries(formData.entries());
-    const response = await fetch("http://127.0.0.1:8000/api/register", {
+    const response = await fetch("http://api.dms.zamnet.zm/api/register", {
       method: "post",
       headers: {
         "Content-Type": "application/json",

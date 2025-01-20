@@ -6,13 +6,16 @@ const DocumentEditorPage = async ({ params }) => {
   const docId = await params.id;
   const session = await getSession();
   const token = session?.token;
-  const document = await fetch(`http://127.0.0.1:8000/api/documents/${docId}`, {
-    method: "GET",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-  }).then((res) => res.json().then((data) => data.data));
+  const document = await fetch(
+    `http://api.dms.zamnet.zm/api/documents/${docId}`,
+    {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+    }
+  ).then((res) => res.json().then((data) => data.data));
   console.log("document by id:", document);
   const fullContent = JSON.parse(document.content);
   console.log("full content: ", fullContent);
