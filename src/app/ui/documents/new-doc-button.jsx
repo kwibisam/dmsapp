@@ -3,13 +3,19 @@ import { useRouter } from "next/navigation";
 import React, { useActionState, useEffect, useRef, useState } from "react";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { ExclamationCircleIcon } from "@heroicons/react/24/outline";
-import { createDocument } from "@/app/lib/actions";
+import { createDocument, uploadDocument } from "@/app/lib/actions";
 const NewDocumentButton = () => {
   const router = useRouter();
   const [errorMessage, formAction, isPending] = useActionState(
     createDocument,
     undefined
   );
+
+  const [errorMessage2, formAction2, isPending2] = useActionState(
+    uploadDocument,
+    undefined
+  );
+
   const [menuVisible, setMenuVisible] = useState(false);
   const [showModalOne, setShowModalOne] = useState(false);
   const [showModalTwo, setShowModalTwo] = useState(false);
@@ -131,7 +137,104 @@ const NewDocumentButton = () => {
   };
 
   const ModalTwo = () => {
-    return <div>this is modal two</div>;
+    return (
+      <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+        <form
+          action={formAction2}
+          className="bg-white p-6 rounded-lg shadow-lg w-96 space-y-6"
+        >
+          <h2 className="text-lg font-bold text-gray-800">Create a New Item</h2>
+
+          {/* Title Input */}
+          <div>
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
+              Title
+            </label>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+              placeholder="Enter a title"
+            />
+          </div>
+
+          {/* File Input */}
+          <div>
+            <label
+              htmlFor="title"
+              className="block text-sm font-medium text-gray-700"
+            >
+              File
+            </label>
+            <input
+              type="file"
+              id="file"
+              name="file"
+              className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm"
+            />
+          </div>
+
+          {/* Tags */}
+          <fieldset>
+            <legend className="text-sm font-medium text-gray-700">Tags</legend>
+            <div className="mt-2 space-y-2">
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="tag"
+                  value="2"
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm text-gray-700">Finance</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="checkbox"
+                  name="tag"
+                  value="3"
+                  className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                />
+                <span className="ml-2 text-sm text-gray-700">HR</span>
+              </label>
+            </div>
+          </fieldset>
+
+          {/* Submit and Close Buttons */}
+          <div className="flex justify-end space-x-4">
+            <button
+              onClick={() => setShowModalTwo(false)}
+              type="button"
+              className="px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400"
+            >
+              Cancel
+            </button>
+            <button
+              aria-disabled={isPending2}
+              type="submit"
+              className="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700"
+            >
+              Submit
+            </button>
+            <div
+              className="flex h-8 items-end space-x-1"
+              aria-live="polite"
+              aria-atomic="true"
+            >
+              {errorMessage2 && (
+                <>
+                  <ExclamationCircleIcon className="h-5 w-5 text-red-500" />
+                  <p className="text-sm text-red-500">{errorMessage2}</p>
+                </>
+              )}
+            </div>
+          </div>
+        </form>
+      </div>
+    );
   };
 
   return (

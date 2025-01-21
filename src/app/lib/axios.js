@@ -1,9 +1,11 @@
 import Axios from 'axios'
-
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL
 const axios = Axios.create({
-    baseURL: "http://127.0.0.1:8000",
+    baseURL: BASE_URL,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
+        'Content-Type': 'application/json'
+
     },
     withCredentials: true,
     withXSRFToken: true,

@@ -3,67 +3,68 @@
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { createSession, deleteSession, getSession } from "./session";
-import { setBearerToken } from "./axios";
+import { axios, setBearerToken } from "./axios";
 
-
-export async function addDocument(prevState, formData) {
-
-  try {
-    console.log("posting data");
-  } catch (error) {
-    // If a database error occurs, return a more specific error.
-    return {
-      message: "Error: Failed to add document.",
-    };
-  }
-
-  // Revalidate the cache for the documents page and redirect the user.
-  revalidatePath("/dashboard/documents");
-  redirect("/dashboard/documents");
-}
+const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
 export async function createDocument(prevState, formData) {
-  let document = null
-  try {
-    const data = {
-      title: formData.get('title'),
-      tags: formData.getAll('tag').join(),
-      content: ""
-    }
+  const session = await getSession()
+  const token = session?.token
+  const data = {
+    title: formData.get('title'),
+    tags: formData.getAll('tag').join(),
+    content: "",
+  }
+  setBearerToken(token)
+  const document = await axios.post('documents', JSON.stringify(data))
+    .then(async (response) => {
+      const data = await response.data
+      return data.data
+    })
+    .catch((error) => {
+      console.log("axios error document: ", error)
+      return `Error: Failed to add document. ${error}`
+    })
+  console.log("created document: ", document)
 
-    const session = await getSession()
-    const response = await fetch(`http://api.dms.zamnet.zm/api/documents`, {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${session.token}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
-
-    if (!response.ok) {
-      throw new Error(response.statusText)
-    }
-    const result = await response.json()
-    document = result.data
-
-  } catch (error) {
-    return `Error: Failed to add document. ${error}`
+  if (document.title) {
+    redirect(`/dashboard/documents/${document.id}?new=true`)
   }
 
-  redirect(`/dashboard/documents/${document.id}?new=true`)
 }
 
+export async function uploadDocument(prevState, formData) {
+  const session = await getSession()
+  const token = session?.token
+
+  const tags = formData.getAll('tag').join()
+  formData.set('tag', tags)
+  setBearerToken(token)
+  const document = await axios.post('documents', formData, {
+    headers: {
+      "Content-Type": "multipart/form-data"
+    }
+  })
+    .then(async (response) => {
+      const data = await response.data
+      return data.data
+    })
+    .catch((error) => {
+      return `Error: Failed to add document. ${error}`
+    })
+  console.log("created document: ", document)
+  redirect(`/dashboard/documents/${document.id}`)
+}
+
+
 export async function updateDocContent(id, outputData) {
-  console.log("here is the data: ", outputData)
   const session = await getSession()
   const token = session?.token
   try {
     const data = {
       content: outputData
     }
-    console.log("stringfied data: ", JSON.stringify(data))
-    const response = await fetch(`http://api.dms.zamnet.zm/api/documents/${id}`, {
+    const response = await fetch(`${BASE_URL}documents/${id}`, {
       method: 'PUT',
       headers: {
         Authorization: `Bearer ${token}`,
@@ -81,22 +82,10 @@ export async function updateDocContent(id, outputData) {
   }
 }
 
-export async function UpdateDocument(id, prevState, formData) {
-  try {
-    console.log("update document");
-  } catch (error) {
-    return { message: "Database Error: Failed to Update document." };
-  }
-
-  revalidatePath("/dashboard/documents");
-  redirect("/dashboard/documents");
-}
-
 export async function deleteDocument(id) {
-  console.log("the id is: ", id)
   const session = await getSession()
   const token = session?.token
-  const response = await fetch(`http://api.dms.zamnet.zm/api/documents/${id}`, {
+  const response = await fetch(`${BASE_URL}documents/${id}`, {
     method: 'DELETE',
     headers: {
       "Authorization": `Bearer ${token}`,
@@ -107,19 +96,18 @@ export async function deleteDocument(id) {
   if (!response.ok) {
     return "delete failed"
   }
-
   revalidatePath("/dashboard/documents");
-  // redirect('/dashboard/documents')
 }
 
 export async function deleteDocumentById(prevState, formData) {
+  const session = await getSession()
+  const token = session?.token
   const id = formData.get('id')
   try {
-    const session = await getSession()
-    const response = await fetch(`http://api.dms.zamnet.zm/api/documents/${id}`, {
+    const response = await fetch(`${BASE_URL}documents/${id}`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${session.token}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
     });
@@ -128,7 +116,6 @@ export async function deleteDocumentById(prevState, formData) {
       throw new Error(response.statusText)
     }
   } catch (error) {
-    console.log("error: ", error)
     return "fatal error"
   }
 
@@ -138,64 +125,49 @@ export async function deleteDocumentById(prevState, formData) {
 export async function authenticate(prevState, formData) {
   'use server'
   try {
-    //send login credentials to api
     const { email, password } = Object.fromEntries(formData.entries());
-    const response = await fetch("http://api.dms.zamnet.zm/api/login", {
+    const response = await fetch(`${BASE_URL}login`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify({ email, password }),
     });
-
-
     if (!response.ok) {
       console.log("response ", response.statusText)
       if (response.status === 400) {
         const err = await response.json()
-        console.log(err)
         return `${err.message}`
       }
 
       throw new Error(`Error: ${response.statusText}`);
     }
 
-
     const data = await response.json();
     const { token } = data
-    setBearerToken(token)
-    console.log("response data ", data)
     await createSession(token)
   } catch (error) {
     console.log(error);
     return `Bad request: ${error}`;
   }
-  console.log("login was successful redirecting user to dashboard...")
   redirect('/dashboard')
 }
 
-
-export async function demo(formData) {
-  console.log("hello server")
-  console.log("form data", formData)
-}
-
 export async function logout(prevState, formData) {
+  const session = await getSession()
+  const token = session?.token
   try {
-
-    const session = await getSession()
-    await fetch('http://api.dms.zamnet.zm/api/logout', {
+    await fetch(`${BASE_URL}logout`, {
       method: 'POST',
       headers: {
-        'Authorization': `Bearer ${session.token}`,
+        'Authorization': `Bearer ${token}`,
         'Content-Type': 'application/json'
       }
     });
   } catch (error) {
     console.log("error: ", error)
-    return "fatal error"
+    return "failed. try again"
   }
-
   await deleteSession()
   redirect('/login')
 }
@@ -219,11 +191,13 @@ export async function createCustomer(prevState, formData) {
 
 
 export async function register(prevState, formData) {
-  'use server'
+  const session = await getSession()
+  const token = session?.token
+
   try {
     //send login credentials to api
     const { email, password, name } = Object.fromEntries(formData.entries());
-    const response = await fetch("http://api.dms.zamnet.zm/api/register", {
+    const response = await fetch(`${BASE_URL}register`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
@@ -233,7 +207,6 @@ export async function register(prevState, formData) {
 
 
     if (!response.ok) {
-      console.log("response ", response.statusText)
       if (response.status >= 400) {
         const err = await response.json()
         console.log(err)
@@ -242,11 +215,8 @@ export async function register(prevState, formData) {
 
       throw new Error(`Error: ${response.statusText}`);
     }
-
-
     const data = await response.json();
     const { token } = data
-    setBearerToken(token)
     await createSession(token)
   } catch (error) {
     console.log(error);

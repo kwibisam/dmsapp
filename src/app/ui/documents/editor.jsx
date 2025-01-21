@@ -1,7 +1,9 @@
 "use client";
 import { updateDocContent } from "@/app/lib/actions";
 import React, { useCallback, useState, useEffect, useRef } from "react";
-
+import Header from "@editorjs/header";
+import EditorjsList from "@editorjs/list";
+import Table from "@editorjs/table";
 const Editor = ({ data, docId }) => {
   const [isMounted, setIsMounted] = useState(false);
   const ref = useRef();
@@ -13,6 +15,29 @@ const Editor = ({ data, docId }) => {
       const editor = new EditorJS({
         holder: "editorjs",
         data: data,
+        tools: {
+          header: {
+            class: Header,
+            shortcut: "CMD+SHIFT+H",
+          },
+          table: {
+            class: Table,
+            inlineToolbar: true,
+            config: {
+              rows: 2,
+              cols: 3,
+              maxRows: 5,
+              maxCols: 5,
+            },
+          },
+          list: {
+            class: EditorjsList,
+            inlineToolbar: true,
+            config: {
+              defaultStyle: "unordered",
+            },
+          },
+        },
       });
       ref.current = editor;
     }
@@ -50,7 +75,7 @@ const Editor = ({ data, docId }) => {
         } else {
           alert("update failed, try again");
         }
-        alert(JSON.stringify(outputData));
+        // alert(JSON.stringify(outputData));
       });
     }
   };

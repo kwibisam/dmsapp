@@ -6,7 +6,7 @@ import Link from "next/link";
 export default async function DocumentsTable({ query, currentPage }) {
   // const documents = await fetchFilteredDocuments(query, currentPage);
   const documents = await fetchAllDocuments();
-
+  console.log("documents: ", documents);
   return (
     <div className="mt-6 flow-root">
       <div className="inline-block min-w-full align-middle">
