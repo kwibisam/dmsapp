@@ -115,3 +115,24 @@ h1 {
     display: none;
   }
 }
+
+/* editor columns styles */
+.layout-tool {
+  border: 1px dashed #ccc;
+  padding: 10px;
+  margin: 10px 0;
+  display: flex;
+  gap: 1rem;
+  align-content: center;
+}
+
+.layout-tool__add-button {
+  margin: 5px 0;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+
+.layout-tool__child {
+  margin: 10px 0;
+  flex: 1;
+}

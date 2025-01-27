@@ -35,7 +35,8 @@ const DocumentDetails = async ({ params, searchParams }) => {
           {isNew ? (
             <Editor docId={docId} data={content} />
           ) : (
-            <EditorRender data={content} />
+            // <EditorRender data={content} />
+            <Editor docId={docId} data={content} />
           )}
         </div>
       )}

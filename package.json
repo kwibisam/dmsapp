@@ -23,6 +23,7 @@
     "@heroicons/react": "^2.2.0",
     "axios": "^1.7.9",
     "clsx": "^2.1.1",
+    "editorjs-layout": "^1.2.5",
     "editorjs-parser": "^1.5.3",
     "editorjs-react-renderer": "^3.5.1",
     "fabric": "^6.5.3",

@@ -4,6 +4,9 @@ import React, { useCallback, useState, useEffect, useRef } from "react";
 import Header from "@editorjs/header";
 import EditorjsList from "@editorjs/list";
 import Table from "@editorjs/table";
+import ColumnLayout from "@/app/lib/editor-column-layout";
+import SimpleImage from "@/app/lib/simple-image";
+import LayoutTool from "@/app/lib/layout-tool";
 const Editor = ({ data, docId }) => {
   const [isMounted, setIsMounted] = useState(false);
   const ref = useRef();
@@ -14,8 +17,12 @@ const Editor = ({ data, docId }) => {
     if (!ref.current) {
       const editor = new EditorJS({
         holder: "editorjs",
-        data: data,
         tools: {
+          layout: LayoutTool,
+          image: {
+            class: SimpleImage,
+            inlineToolbar: ["link"],
+          },
           header: {
             class: Header,
             shortcut: "CMD+SHIFT+H",
@@ -69,13 +76,13 @@ const Editor = ({ data, docId }) => {
       ref.current.save().then(async (outputData) => {
         console.log("outputData: ", outputData);
 
-        const r = await updateDocContent(docId, outputData);
-        if (r) {
-          alert("update success!");
-        } else {
-          alert("update failed, try again");
-        }
-        // alert(JSON.stringify(outputData));
+        // const r = await updateDocContent(docId, outputData);
+        // if (r) {
+        //   alert("update success!");
+        // } else {
+        //   alert("update failed, try again");
+        // }
+        alert(JSON.stringify(outputData));
       });
     }
   };
