@@ -3,6 +3,7 @@ import {
   UserGroupIcon,
   HomeIcon,
   DocumentDuplicateIcon,
+  RocketLaunchIcon
 } from '@heroicons/react/24/outline';
 
 import clsx from 'clsx';
@@ -18,6 +19,10 @@ const links = [
     icon: DocumentDuplicateIcon,
   },
   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
+  { name: 'Roles', href: '/dashboard/roles', icon: RocketLaunchIcon },
+  { name: 'WorkSpaces', href: '/dashboard/workspaces', icon: RocketLaunchIcon },
+  { name: 'Doc Types', href: '/dashboard/doctypes', icon: RocketLaunchIcon },
+  { name: 'Tags', href: '/dashboard/tags', icon: RocketLaunchIcon },
 ];
 
 export default function NavLinks() {

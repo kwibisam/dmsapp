@@ -1,16 +1,15 @@
 import LoginForm from "../ui/login-form";
 import ZamnetLogo from "../ui/zamnet-logo";
+import Image from "next/image";
 export default function LoginPage() {
   return (
-    <main className="flex items-center justify-center md:h-screen">
-      <div className="relative mx-auto flex w-full max-w-[600px] flex-col space-y-2.5 p-4 mt-6">
-        <div className="flex h-20 w-full items-end rounded-lg bg-blue-500 p-3 md:h-36">
-          <div className="w-32 text-white md:w-36">
-            <ZamnetLogo />
-          </div>
-        </div>
-        <LoginForm />
+    <main className="flex items-center justify-center h-screen p-6 bg-orange-400  bg-cover bg-bottom bg-no-repeat"
+     style={{ backgroundImage: "url('/digitization.jpg')" }}>
+      {/* <Image src='/digitization.jpg' width={1280} height={850} alt="image" className=""/> */}
+      <div className="w-96">
+      <LoginForm />
       </div>
+      
     </main>
   );
 }

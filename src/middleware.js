@@ -1,20 +1,12 @@
 import { NextResponse } from 'next/server';
-import { decrypt } from '@/app/lib/session';
-import { cookies } from 'next/headers';
+import { getSession } from '@/app/lib/session';
 
-async function getSession(req) {
-  const cookie = (await cookies()).get('session')?.value;
-  return decrypt(cookie);
-}
 
 export default async function middleware(req) {
   const path = req.nextUrl.pathname;
-  const session = await getSession(req);
-
-  // Check if the route is protected (starts with /dashboard)
+  const session = await getSession();
   const isProtectedRoute = path.startsWith('/dashboard');
 
-  // Check if the route is public
   const publicRoutes = ['/sign-up', '/login', '/'];
   const isPublicRoute = publicRoutes.includes(path);
 

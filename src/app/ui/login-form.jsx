@@ -10,6 +10,7 @@ import { ArrowRightIcon } from "@heroicons/react/20/solid";
 import { Button } from "./button";
 import { useActionState } from "react";
 import { lusitana } from "./fonts";
+import ZamnetLogo from "./zamnet-logo";
 
 const LoginForm = () => {
   const [errorMessage, formAction, isPending] = useActionState(
@@ -17,11 +18,17 @@ const LoginForm = () => {
     undefined
   );
   return (
-    <form action={formAction} className="space-y-3">
-      <div className="flex-1 rounded-lg bg-gray-50 px-6 pb-4 pt-8">
-        <h1 className={`${lusitana.className} mb-3 text-2xl`}>
+    <form action={formAction} className="space-y-3 h-full">
+      <div className="flex-1 flex flex-col gap-10 rounded-lg bg-gray-50 px-6 pb-4 pt-8 bg-opacity-95">
+        
+
+        <div>
+          <ZamnetLogo className="text-blue-800 mb-4"/>
+          <h1 className={`${lusitana.className} mb-3 text-2xl text-center`}>
           Please log in to continue.
         </h1>
+        </div>
+
         <div className="w-full">
           <div>
             <label
@@ -63,6 +70,7 @@ const LoginForm = () => {
             </div>
           </div>
         </div>
+
         <Button className="mt-4 w-full" aria-disabled={isPending}>
           Log in <ArrowRightIcon className="ml-auto h-5 w-5 text-gray-50" />
         </Button>

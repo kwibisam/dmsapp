@@ -1,149 +1,114 @@
 "use client";
+
 import React, { useState } from "react";
-import { useRouter } from "next/navigation";
-import { demo } from "@/app/lib/actions";
+import QuotationForm from "./quotation-form";
+import ServiceRequestForm from "./service-request-form";
+import ContractForm from "./contract-form";
+import ReportForm from "./report-form";
 
-const CreateDocForm = ({onNext}) => {
-  const [step, setStep] = useState(1);
-  const [file, setFile] = useState(null);
-  const [metadata, setMetadata] = useState({ title: "", description: "" });
-  const router = useRouter();
+const formComponents = {
+  quotation: QuotationForm,
+  serviceRequest: ServiceRequestForm,
+  contract: ContractForm,
+  report: ReportForm,
+};
 
-  const steps = [
-    "Step 1: Upload Document",
-    "Step 2: Fill Metadata",
-    "Step 3: Review and Submit",
-  ];
+const DocumentWizard = ({token}) => {
+  const [currentStep, setCurrentStep] = useState(0);
 
-  const handleNext = () => setStep((prev) => prev + 1);
-  const handleBack = () => setStep((prev) => prev - 1);
+  const [docData, setDocData] = useState({
+    title: "",
+    documentType: "",
+    tags: [],
+  });
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+  const steps = ["Document Info", "Form Details"];
+
+  const updateField = (field, value) => {
+    setDocData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleMetadataChange = (e) => {
-    const { name, value } = e.target;
-    setMetadata((prev) => ({ ...prev, [name]: value }));
-  };
+  const goToNext = () =>
+    setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+  const goToPrevious = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
+  const renderDocumentInfo = () => (
+    <div>
+      <h2 className="text-xl font-bold mb-4">Document Information</h2>
+      <input
+        type="text"
+        value={docData.title}
+        onChange={(e) => updateField("title", e.target.value)}
+        placeholder="Title"
+        className="w-full p-2 border rounded mb-4"
+      />
 
-  const handleSubmit = async () => {
-    const formData = new FormData();
-    formData.append("title", metadata.title);
-    formData.append("file", file);
-  
-    try {
-      demo(formData)
-      // const response = await fetch("http://localhost:8000/api/documents", {
-      //   method: "POST",
-      //   headers: {
-      //     "Authorization": `Bearer ${token}`,
-      //   },
-      //   body: formData,
-      // });
-  
-      // // Handle the response as needed
-      // if (!response.ok) {
-      //   throw new Error(response.statusText)  
-      // } 
-      // const result = await response.json();
-      // router.push("/dashboard/documents")
-    } catch (error) {
-      alert("An error occurred, check logs:");
-      console.log(error);
-    }
-  };
-  
-  
-
-  const StepNavigation = ({ onBack, onNext, nextDisabled }) => (
-    <div style={{ marginTop: "20px" }}>
-      {onBack && <button onClick={onBack}>Back</button>}
-      {onNext && (
-        <button onClick={onNext} disabled={nextDisabled} style={{ marginLeft: "10px" }}>
-          Next
-        </button>
-      )}
+      <div className="mb-4">
+        <p>Select Form Type:</p>
+        {["quotation", "serviceRequest", "contract", "report"].map((type) => (
+          <button
+            key={type}
+            onClick={() => updateField("documentType", type)}
+            className={`mr-2 px-4 py-2 rounded ${
+              docData.documentType === type
+                ? "bg-blue-500 text-white"
+                : "bg-gray-200"
+            }`}
+          >
+            {type.charAt(0).toUpperCase() + type.slice(1)}
+          </button>
+        ))}
+      </div>
+      <button
+        onClick={goToNext}
+        disabled={!docData.title || !docData.documentType}
+        className="px-4 py-2 bg-blue-500 text-white rounded"
+      >
+        Next
+      </button>
     </div>
   );
 
-  return (
-    <div style={{ maxWidth: "600px", margin: "0 auto", padding: "20px", fontFamily: "Arial, sans-serif" }}>
-      {/* Step Titles at the Top */}
-      <div style={{ marginBottom: "20px" }}>
-        <h2>{steps[step - 1]}</h2>
-        <div style={{ display: "flex", justifyContent: "space-between", marginTop: "10px" }}>
-          {steps.map((title, index) => (
-            <div
-              key={index}
-              style={{
-                flex: 1,
-                textAlign: "center",
-                fontWeight: step === index + 1 ? "bold" : "normal",
-                color: step === index + 1 ? "#000" : "#aaa",
-              }}
-            >
-              {title}
-            </div>
-          ))}
+  const renderFormDetails = () => {
+    const FormComponent = formComponents[docData.documentType];
+    if (!FormComponent) return <p>Unsupported form type selected.</p>;
+    return (
+      <div>
+        <FormComponent meta={docData} token={token} />
+        <div className="flex justify-end mt-4">
+          <button
+            onClick={goToPrevious}
+            className="px-4 py-2 bg-gray-500 text-white rounded"
+          >
+            Cancel
+          </button>
         </div>
       </div>
+    );
+  };
 
-      {/* Step Content */}
-      {step === 1 && (
-        <fieldset>
-          <legend>Upload Document</legend>
-          <input type="file" onChange={handleFileChange} style={{ marginBottom: "10px" }} />
-          <StepNavigation onNext={handleNext} nextDisabled={!file} />
-        </fieldset>
-      )}
+  const renderStepContent = () => {
+    switch (currentStep) {
+      case 0:
+        return renderDocumentInfo();
+      case 1:
+        return renderFormDetails();
+      default:
+        return null;
+    }
+  };
 
-      {step === 2 && (
-        <fieldset>
-          <legend>Fill Metadata</legend>
-          <form>
-            <div style={{ marginBottom: "10px" }}>
-              <label style={{ display: "block", marginBottom: "5px" }}>Title:</label>
-              <input
-                type="text"
-                name="title"
-                value={metadata.title}
-                onChange={handleMetadataChange}
-                style={{ width: "100%", padding: "8px" }}
-              />
-            </div>
-            <div>
-              <label style={{ display: "block", marginBottom: "5px" }}>Description:</label>
-              <textarea
-                name="description"
-                value={metadata.description}
-                onChange={handleMetadataChange}
-                style={{ width: "100%", padding: "8px", height: "80px" }}
-              />
-            </div>
-          </form>
-          <StepNavigation onBack={handleBack} onNext={handleNext} nextDisabled={!metadata.title || !metadata.description} />
-        </fieldset>
-      )}
-
-      {step === 3 && (
-        <fieldset>
-          <legend>Review and Submit</legend>
-          <div style={{ marginBottom: "10px" }}>
-            <h3>Uploaded Document:</h3>
-            <p>{file?.name || "No file uploaded"}</p>
-          </div>
-          <div>
-            <h3>Metadata:</h3>
-            <p><strong>Title:</strong> {metadata.title}</p>
-            <p><strong>Description:</strong> {metadata.description}</p>
-          </div>
-          <StepNavigation onBack={handleBack} onNext={handleSubmit} />
-        </fieldset>
-      )}
+  return (
+    <div className="p-4 max-w-max mx-auto shadow rounded">
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold">New Document Wizard</h1>
+        {/* <p>
+          Step {currentStep + 1} of {steps.length}: {steps[currentStep]}
+        </p> */}
+      </header>
+      {renderStepContent()}
     </div>
   );
 };
 
-export default CreateDocForm;
+export default DocumentWizard;

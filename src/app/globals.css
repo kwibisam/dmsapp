@@ -7,12 +7,6 @@
   --foreground: #122339;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
 
 body {
   color: var(--foreground);
@@ -24,115 +18,85 @@ h1 {
   color: #122339;
 }
 
-.editor .ql-editor {
-  width: 8.5in;
-  min-height: 11in;
-  padding: 1in;
-  margin: 1rem;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
-  background-color: white;
+
+/* REQUIRED STYLES */
+
+
+.ce-editorjsColumns_col{
+  flex: 50%;
 }
 
-.editor .ql-container.ql-snow {
-  border: none;
+
+
+
+.ce-editorjsColumns_wrapper{
   display: flex;
-  justify-content: center;
-}
+  width:100%;
+  gap: 10px;
+  margin-bottom: 10px;
+  flex-direction: row;
 
-.container .ql-editor {
-  width: 8.5in;
-  min-height: 11in;
-  padding: 1in;
-  margin: 1rem;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
-  background-color: white;
-}
-
-.container .ql-container.ql-snow {
-  border: none;
-  display: flex;
-  justify-content: center;
-}
-
-.container .ql-toolbar.ql-snow {
-  display: flex;
-  justify-content: center;
-  position: sticky;
-  top: 0;
-  z-index: 1;
-  background-color: #f3f3f3;
-  border: none;
-  box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
-}
-
-@page {
-  margin: 1in;
-}
-
-@media print {
-  body {
-    background: none;
+  .ce-toolbar__actions{
+    z-index:0;
   }
 
-  .container .ql-editor {
-    width: 6.5in;
-    height: 9in;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-    align-self: flex-start;
+  .ce-toolbar{
+    z-index: 4;
   }
 
-  .container .ql-toolbar.ql-snow {
-    display: none;
+  .ce-popover{
+    z-index: 4000;
+  }
+
+  
+}
+
+@media (max-width: 800px) {
+  .ce-editorjsColumns_wrapper {
+    flex-direction: column;
+    padding:10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
   }
 }
 
-@page {
-  margin: 1in;
+
+
+/* 
+
+These styles will also affect the parent editor!!!!!!
+
+*/
+
+.ce-inline-toolbar{
+  z-index:1000
 }
 
-@media print {
-  body {
-    background: none;
-  }
-
-  .nav,
-  .bread-crumb {
-    display: none;
-  }
-
-  .container .ql-editor {
-    width: 6.5in;
-    height: 9in;
-    padding: 0;
-    margin: 0;
-    box-shadow: none;
-    align-self: flex-start;
-  }
-
-  .container .ql-toolbar.ql-snow {
-    display: none;
-  }
+.ce-block__content, 
+.ce-toolbar__content {
+  max-width: calc(100% - 50px);  /* example value, adjust for your own use case */
 }
 
-/* editor columns styles */
-.layout-tool {
-  border: 1px dashed #ccc;
-  padding: 10px;
-  margin: 10px 0;
-  display: flex;
-  gap: 1rem;
-  align-content: center;
+/*   */
+.ce-toolbar__actions{
+  right: calc(100% + 30px); 
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 4px;
 }
 
-.layout-tool__add-button {
-  margin: 5px 0;
-  padding: 5px 10px;
-  cursor: pointer;
+/* Would be better to remove --narrow mode */
+/* Issue Raised */
+/* // This causes an error which is good i think? */
+.codex-editor--narrow .codex-editor__redactor{
+  margin: 0;
 }
 
-.layout-tool__child {
-  margin: 10px 0;
-  flex: 1;
+/* Required to prevent clipping */
+.ce-toolbar{
+  z-index: 4;
+}
+
+.codex-editor{
+  /* background:#f00 !important; */
+  z-index: auto !important; 
 }

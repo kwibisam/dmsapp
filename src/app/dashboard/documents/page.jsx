@@ -7,6 +7,7 @@ import { Suspense } from "react";
 import { fetchDocumentsPages } from "@/app/lib/data";
 import DocumentsTable from "@/app/ui/documents/table";
 import NewDocumentButton from "@/app/ui/documents/new-doc-button";
+import Link from "next/link";
 export const metadata = {
   title: "Documents",
 };
@@ -25,8 +26,7 @@ export default async function Documents(props) {
       </div>
       <div className="mt-4 flex items-center justify-between gap-2 md:mt-8">
         <Search placeholder="Search documents..." />
-        {/* <AddDocument /> */}
-        <NewDocumentButton />
+        <Link href="documents/new-document">new document</Link>
       </div>
       <Suspense key={query + currentPage} fallback={<InvoicesTableSkeleton />}>
         <DocumentsTable query={query} currentPage={currentPage} />

@@ -6,6 +6,36 @@ const ITEMS_PER_PAGE = 6;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
+export async function fetchDocumentTypes() {
+  const session = await getSession()
+  const token = session?.token
+  setBearerToken(token)
+  const types = axios.get('types')
+    .then(async (response) => {
+      const result = await response.data
+      return result.data
+    })
+    .catch((error) => {
+      console.log("fetchDocumentTypes(): ", error)
+    })
+  return types
+}
+
+export async function fetchDocumentTags() {
+  const session = await getSession()
+  const token = session?.token
+  setBearerToken(token)
+  const tags = axios.get('tags')
+    .then(async (response) => {
+      const result = await response.data
+      return result.data
+    })
+    .catch((error) => {
+      console.log("fetchDocumentTags(): ", error)
+    })
+  return tags
+}
+
 export async function fetchAllDocuments(currentPage) {
   const session = await getSession()
   const token = session?.token
@@ -29,7 +59,6 @@ export async function fetchDocumentsPages(query) {
 }
 
 export async function fetchDocumentById(id) {
-  console.log("fetch by id(): id: ", id)
   const session = await getSession()
   const token = session?.token
   setBearerToken(token)
@@ -46,3 +75,52 @@ export async function fetchDocumentById(id) {
 }
 
 
+export async function fetchUser() {
+  const session = await getSession()
+  const token = session?.token
+  setBearerToken(token)
+  const user = await axios.get(`user`)
+  .then((response) => {
+    const res = response.data
+    // console.log("fetchUser:: ", res.data)
+    return res.data
+  })
+  .catch((error) => {
+    console.log("error getting user: ", error)
+  })
+  return user
+}
+
+
+//fetch roles
+export async function fetchRoles() {
+  const session = await getSession()
+  const token = session?.token
+  setBearerToken(token)
+  const roles = await axios.get('roles')
+  .then((resposne) => {
+    // console.log("data.js::fetchRoles() ", resposne.data.data)
+    return resposne.data.data
+  })
+  .catch((error) => {
+    console.log("data.js::fetchRoles() error: ", error)
+  })
+
+  return roles
+}
+
+//fetch workspaces
+export async function fetchWorkspaces() {
+  const session = await getSession()
+  const token = session?.token
+  setBearerToken(token)
+  const workspaces = await axios.get('workspaces')
+  .then((resposne) => {
+    return resposne.data.data
+  })
+  .catch((error) => {
+    console.log("data.js::fetchWorkspaces() error: ", error)
+  })
+
+  return workspaces
+}

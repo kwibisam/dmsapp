@@ -258,7 +258,7 @@ const NewDocumentButton = () => {
               onClick={() => setShowModalTwo(true)}
               className="py-1 px-2 hover:bg-gray-200 cursor-pointer"
             >
-              import
+              upload
             </li>
 
             <li
