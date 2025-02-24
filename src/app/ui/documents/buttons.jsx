@@ -1,6 +1,6 @@
 import { PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { deleteDocument, deleteRole, deleteWorkspace } from "@/app/lib/actions";
+import { deleteDocument, deleteRole, deleteDocumentType, deleteWorkspace, deleteTag } from "@/app/lib/actions";
 export function AddDocument() {
   return (
     <Link
@@ -61,12 +61,39 @@ export function DeleteRole({ id }) {
   );
 }
 
+export function DeleteTag({ id }) {
+const deleteTagWithId = deleteTag.bind(null, id);
+
+  return (
+    <form action={deleteTagWithId}>
+      <button className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Delete</span>
+        <TrashIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
 
 export function DeleteWorkspace({ id }) {
   const deleteWorkspaceWithId = deleteWorkspace.bind(null, id);
 
   return (
     <form action={deleteWorkspaceWithId}>
+      <button className="rounded-md border p-2 hover:bg-gray-100">
+        <span className="sr-only">Delete</span>
+        <TrashIcon className="w-5" />
+      </button>
+    </form>
+  );
+}
+
+
+export function DeleteDocumentType({ id }) {
+  const deleteDocumentTypeWithId = deleteDocumentType.bind(null, id);
+
+  return (
+    <form action={deleteDocumentTypeWithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />

@@ -18,10 +18,11 @@ const links = [
     href: '/dashboard/documents',
     icon: DocumentDuplicateIcon,
   },
+  { name: 'Users', href: '/dashboard/users', icon: UserGroupIcon },
   { name: 'Customers', href: '/dashboard/customers', icon: UserGroupIcon },
   { name: 'Roles', href: '/dashboard/roles', icon: RocketLaunchIcon },
   { name: 'WorkSpaces', href: '/dashboard/workspaces', icon: RocketLaunchIcon },
-  { name: 'Doc Types', href: '/dashboard/doctypes', icon: RocketLaunchIcon },
+  { name: 'Doc Types', href: '/dashboard/document-types', icon: RocketLaunchIcon },
   { name: 'Tags', href: '/dashboard/tags', icon: RocketLaunchIcon },
 ];
 

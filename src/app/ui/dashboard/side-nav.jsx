@@ -11,7 +11,7 @@ import LogoutButton from "../logout-button";
       > 
         <div className="w-32 text-white md:w-40">
           <ZamnetLogo />
-          <h2 className="font-semibold uppercase"> {user.defaultSpace[0].name} - <span className="lowercase font-normal text-sm">workspace</span></h2>
+          <h2 className="font-semibold uppercase"> {user.defaultSpace.name} - <span className="lowercase font-normal text-sm">workspace</span></h2>
         </div>
       </Link>
       <div className="flex grow flex-row justify-between space-x-2 md:flex-col md:space-x-0 md:space-y-2">

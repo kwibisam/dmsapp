@@ -135,6 +135,24 @@ export async function deleteRole(id) {
 }
 
 
+export async function deleteTag(id) {
+  const session = await getSession();
+  const token = session?.token;
+  const response = await fetch(`${BASE_URL}tags/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    return "failed to delete tag";
+  }
+  revalidatePath("/dashboard/tags");
+}
+
+
 
 export async function deleteWorkspace(id) {
   const session = await getSession();
@@ -153,7 +171,22 @@ export async function deleteWorkspace(id) {
   revalidatePath("/dashboard/workspaces");
 }
 
+export async function deleteDocumentType(id) {
+  const session = await getSession();
+  const token = session?.token;
+  const response = await fetch(`${BASE_URL}types/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
 
+  if (!response.ok) {
+    return "failed to delete document type";
+  }
+  revalidatePath("/dashboard/document-types");
+}
 
 
 export async function deleteDocumentById(prevState, formData) {
@@ -247,39 +280,7 @@ export async function createCustomer(prevState, formData) {
   // redirect("/dashboard/customers")
 }
 
-export async function register(prevState, formData) {
-  const session = await getSession();
-  const token = session?.token;
 
-  try {
-    //send login credentials to api
-    const { email, password, name } = Object.fromEntries(formData.entries());
-    const response = await fetch(`${BASE_URL}register`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password, name }),
-    });
-
-    if (!response.ok) {
-      if (response.status >= 400) {
-        const err = await response.json();
-        console.log(err);
-        return `${err.message}`;
-      }
-
-      throw new Error(`Error: ${response.statusText}`);
-    }
-    const data = await response.json();
-    const { token } = data;
-    await createSession(token);
-  } catch (error) {
-    console.log(error);
-    return `Bad request: ${error}`;
-  }
-  redirect("/dashboard");
-}
 export async function init() {
   return true;
 }
@@ -327,4 +328,35 @@ export async function createWorkspace(prevState, formData) {
     return "error creating workspace"
   })
   redirect("/dashboard/workspaces")
+}
+
+
+//USERS
+
+//create user
+export async function createUser(prevState, formData) {
+  const session = await getSession();
+  const token = session?.token;
+
+  try {
+    const { email, password, name, workspace_id } = Object.fromEntries(formData.entries());
+    const response = await fetch(`${BASE_URL}register`, {
+      method: "post",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`
+      },
+      body: JSON.stringify({ email, password, name, workspace_id }),
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    console.log("response: ", await response.json())
+  } catch (error) {
+    console.log(error);
+    return `Bad request: ${error}`;
+  }
+  redirect("/dashboard/users?create=success");
 }

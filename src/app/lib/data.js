@@ -6,35 +6,22 @@ const ITEMS_PER_PAGE = 6;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL
 
-export async function fetchDocumentTypes() {
-  const session = await getSession()
-  const token = session?.token
-  setBearerToken(token)
-  const types = axios.get('types')
-    .then(async (response) => {
-      const result = await response.data
-      return result.data
-    })
-    .catch((error) => {
-      console.log("fetchDocumentTypes(): ", error)
-    })
-  return types
-}
+// export async function fetchDocumentTypes() {
+//   const session = await getSession()
+//   const token = session?.token
+//   setBearerToken(token)
+//   const types = axios.get('types')
+//     .then(async (response) => {
+//       const result = await response.data
+//       return result.data
+//     })
+//     .catch((error) => {
+//       console.log("fetchDocumentTypes(): ", error)
+//     })
+//   return types
+// }
 
-export async function fetchDocumentTags() {
-  const session = await getSession()
-  const token = session?.token
-  setBearerToken(token)
-  const tags = axios.get('tags')
-    .then(async (response) => {
-      const result = await response.data
-      return result.data
-    })
-    .catch((error) => {
-      console.log("fetchDocumentTags(): ", error)
-    })
-  return tags
-}
+
 
 export async function fetchAllDocuments(currentPage) {
   const session = await getSession()
@@ -75,23 +62,6 @@ export async function fetchDocumentById(id) {
 }
 
 
-export async function fetchUser() {
-  const session = await getSession()
-  const token = session?.token
-  setBearerToken(token)
-  const user = await axios.get(`user`)
-  .then((response) => {
-    const res = response.data
-    // console.log("fetchUser:: ", res.data)
-    return res.data
-  })
-  .catch((error) => {
-    console.log("error getting user: ", error)
-  })
-  return user
-}
-
-
 //fetch roles
 export async function fetchRoles() {
   const session = await getSession()
@@ -124,3 +94,72 @@ export async function fetchWorkspaces() {
 
   return workspaces
 }
+
+//fetch document types
+export async function fetchDocumentTypes() {
+  const session = await getSession()
+  const token = session?.token
+  setBearerToken(token)
+  const types = await axios.get('types')
+  .then((resposne) => {
+    return resposne.data.data
+  })
+  .catch((error) => {
+    console.log("data.js::fetchDocumentTypes() error: ", error)
+  })
+
+  return types
+}
+
+
+
+//fetch tags
+export async function fetchTags() {
+  const session = await getSession()
+  const token = session?.token
+  setBearerToken(token)
+  const tags = await axios.get('tags')
+  .then((resposne) => {
+    return resposne.data.data
+  })
+  .catch((error) => {
+    console.log("data.js::fetchTags() error: ", error)
+  })
+
+  return tags
+}
+
+
+
+//USER
+export async function fetchUser() {
+  const session = await getSession()
+  const token = session?.token
+  setBearerToken(token)
+  const user = await axios.get(`user`)
+  .then((response) => {
+    const res = response.data
+    // console.log("fetchUser:: ", res.data)
+    return res.data
+  })
+  .catch((error) => {
+    console.log("error getting user: ", error)
+  })
+  return user
+}
+
+export async function fetchUsers() {
+  const session = await getSession()
+  const token = session?.token
+  setBearerToken(token)
+  const users = await axios.get(`users`)
+  .then((response) => {
+    const res = response.data
+    return res.data
+  })
+  .catch((error) => {
+    console.log("error getting user: ", error)
+  })
+  return users
+}
+
