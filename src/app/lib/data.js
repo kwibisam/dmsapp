@@ -114,7 +114,7 @@ export async function fetchDocumentTypes() {
 
 
 //fetch tags
-export async function fetchTags() {
+export async function fetchDocumentTags() {
   const session = await getSession()
   const token = session?.token
   setBearerToken(token)
