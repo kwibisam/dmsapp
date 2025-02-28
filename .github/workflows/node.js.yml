@@ -26,7 +26,7 @@ jobs:
 
       - name: Deploy to ubunmtu vm
         env:
-          HOST: secrets.HOST
+          HOST: 196.46.215.28
           USERNAME: deploy
           TARGET_DIR: /var/www/html/dms-zmnet
           APP_NAME: dms-zmnet #should match the name of the server block
