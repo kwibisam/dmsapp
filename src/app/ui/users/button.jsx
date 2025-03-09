@@ -6,8 +6,9 @@ import {
   deleteDocumentType,
   deleteWorkspace,
   deleteTag,
-  deleteDepartment,
+  removeRoleFromUser,
 } from "@/app/lib/actions";
+import { removeUserRole } from "@/app/lib/actions/user";
 export function AddDocument() {
   return (
     <Link
@@ -39,19 +40,6 @@ export function UpdateRole({ id }) {
     >
       <PencilIcon className="w-5" />
     </Link>
-  );
-}
-
-export function DeleteDocument({ id }) {
-  const deleteDocumentWithId = deleteDocument.bind(null, id);
-
-  return (
-    <form action={deleteDocumentWithId}>
-      <button className="rounded-md border p-2 hover:bg-gray-100">
-        <span className="sr-only">Delete</span>
-        <TrashIcon className="w-5" />
-      </button>
-    </form>
   );
 }
 
@@ -93,12 +81,10 @@ export function DeleteWorkspace({ id }) {
     </form>
   );
 }
-
-export function DeleteDepartment({ id }) {
-  const deleteDepartmentWithId = deleteDepartment.bind(null, id);
-
+export function DeleteDocumentType({ id }) {
+  const deleteDocumentTypeWithId = deleteDocumentType.bind(null, id);
   return (
-    <form action={deleteDepartmentWithId}>
+    <form action={deleteDocumentTypeWithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />
@@ -106,12 +92,22 @@ export function DeleteDepartment({ id }) {
     </form>
   );
 }
+// export function RemoveUserRole({ userId, roleId }) {
+//   return (
+//     <form action={null}>
+//       <button className="rounded-md border p-2 hover:bg-gray-100">
+//         <span className="sr-only">Delete</span>
+//         <TrashIcon className="w-5" />
+//       </button>
+//     </form>
+//   );
+// }
 
-export function DeleteDocumentType({ id }) {
-  const deleteDocumentTypeWithId = deleteDocumentType.bind(null, id);
+export function RemoveUserRole({ userId, roleId }) {
+  const removeUserRoleWithId = removeUserRole.bind(null, userId, roleId);
 
   return (
-    <form action={deleteDocumentTypeWithId}>
+    <form action={removeUserRoleWithId}>
       <button className="rounded-md border p-2 hover:bg-gray-100">
         <span className="sr-only">Delete</span>
         <TrashIcon className="w-5" />

@@ -7,15 +7,15 @@ import React, { useEffect, useState } from "react";
 import { Button } from "../button";
 import { useRouter, useSearchParams } from "next/navigation";
 import { axios, setBearerToken } from "@/app/lib/axios";
-const WorkspaceForm = ({ token }) => {
+const DepartmentForm = ({ token }) => {
   const params = useSearchParams();
-  const workspaceId = params.get("workspaceId");
+  const departmentId = params.get("departmentId");
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState(null);
 
-  const [workspace, setWorkspace] = useState({
+  const [department, setDepartment] = useState({
     name: "",
     id: "",
   });
@@ -24,24 +24,24 @@ const WorkspaceForm = ({ token }) => {
     name: "",
     id: "",
   });
-  const [title, setTitle] = useState("Create Workspace");
+  const [title, setTitle] = useState("Create Department");
   const [action, setAction] = useState("Create");
 
   useEffect(() => {
-    if (workspaceId) {
-      setTitle("Update Workspace");
+    if (departmentId) {
+      setTitle("Update Department");
       setBearerToken(token);
       axios
-        .get(`workspaces/${workspaceId}`)
+        .get(`departments/${departmentId}`)
         .then((response) => {
           setData(response.data.data);
           setAction("Update");
         })
         .catch((error) => {
-          alert("failed to get workspace");
+          alert("failed to get department");
         });
     }
-  }, [title, workspace]);
+  }, [title, department]);
 
   const handleChange = (e) => {
     setData({ ...data, ["name"]: e.target.value });
@@ -52,35 +52,35 @@ const WorkspaceForm = ({ token }) => {
     setBearerToken(token);
     setErrorMessage(null);
     setLoading(true);
-    if (workspaceId) {
+    if (departmentId) {
       //perform update
       const update = {
         name: data.name,
       };
 
       axios
-        .put(`workspaces/${workspaceId}`, JSON.stringify(update))
+        .put(`departments/${departmentId}`, JSON.stringify(update))
         .then((response) => {
           setLoading(false);
           if (response.status === 200) {
             alert("update success");
-            return router.push("/dashboard/workspaces");
+            return router.push("/dashboard/departments");
           }
         })
         .catch((error) => {
-          console.log("update workspace error: ", error);
+          console.log("update department error: ", error);
           setErrorMessage(error);
-          alert("update workspace failed");
+          alert("update department failed");
           return;
         });
     } else {
       axios
-        .post("workspaces", JSON.stringify({ name: data.name }))
+        .post("departments", JSON.stringify({ name: data.name }))
         .then((response) => {
           setLoading(false);
           if (response.status === 201) {
             alert("create success");
-            return router.push("/dashboard/workspaces");
+            return router.push("/dashboard/departments");
           }
           alert("create failed try again later");
           return;
@@ -94,15 +94,15 @@ const WorkspaceForm = ({ token }) => {
   };
   return (
     <form onSubmit={handleSubmit} className="w-96 flex flex-col gap-4">
-      <label htmlFor="workspaceName" className="text-center">
+      <label htmlFor="departmentName" className="text-center">
         {title}
       </label>
       <input
         value={data.name}
         onChange={handleChange}
         type="text"
-        id="roleName"
-        name="workspaceName"
+        id="departmentName"
+        name="departmentName"
         className="p-4 outline"
       />
 
@@ -125,4 +125,4 @@ const WorkspaceForm = ({ token }) => {
   );
 };
 
-export default WorkspaceForm;
+export default DepartmentForm;

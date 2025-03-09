@@ -23,11 +23,11 @@ export async function createDocument(prevState, formData) {
     tags: formData.getAll("tag").join(","),
     type: formData.get("type"),
     content: content,
-    isForm: false
+    isForm: false,
   };
 
   setBearerToken(token);
-  let document = null
+  let document = null;
   try {
     const response = await axios.post("documents", data);
     document = response.data.data;
@@ -41,11 +41,11 @@ export async function createDocument(prevState, formData) {
       //   document,
       // };
     } else {
-      return "Failed to create document: Invalid response from server"
+      return "Failed to create document: Invalid response from server";
     }
   } catch (error) {
     console.error("Axios error creating document: ", error);
-    return  `Failed to add document: ${error.message || "Unknown error"}`
+    return `Failed to add document: ${error.message || "Unknown error"}`;
   }
   redirect(`/dashboard/documents/${document.id}?new=true`);
 }
@@ -116,7 +116,6 @@ export async function deleteDocument(id) {
   revalidatePath("/dashboard/documents");
 }
 
-
 export async function deleteRole(id) {
   const session = await getSession();
   const token = session?.token;
@@ -133,7 +132,6 @@ export async function deleteRole(id) {
   }
   revalidatePath("/dashboard/roles");
 }
-
 
 export async function deleteTag(id) {
   const session = await getSession();
@@ -152,8 +150,6 @@ export async function deleteTag(id) {
   revalidatePath("/dashboard/tags");
 }
 
-
-
 export async function deleteWorkspace(id) {
   const session = await getSession();
   const token = session?.token;
@@ -169,6 +165,23 @@ export async function deleteWorkspace(id) {
     return "failed to delete workspace";
   }
   revalidatePath("/dashboard/workspaces");
+}
+
+export async function deleteDepartment(id) {
+  const session = await getSession();
+  const token = session?.token;
+  const response = await fetch(`${BASE_URL}departments/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+  });
+
+  if (!response.ok) {
+    return "failed to delete department";
+  }
+  revalidatePath("/dashboard/departments");
 }
 
 export async function deleteDocumentType(id) {
@@ -187,7 +200,6 @@ export async function deleteDocumentType(id) {
   }
   revalidatePath("/dashboard/document-types");
 }
-
 
 export async function deleteDocumentById(prevState, formData) {
   const session = await getSession();
@@ -226,7 +238,7 @@ export async function authenticate(prevState, formData) {
     if (!response.ok) {
       if (response.status === 400) {
         const err = await response.json();
-        console.log("login error: ",err);
+        console.log("login error: ", err);
         return `${err.message}`;
       }
 
@@ -234,8 +246,8 @@ export async function authenticate(prevState, formData) {
     }
 
     const res = await response.json();
-    const { token } = res.data
-    console.log("actions.js::authenticate() ", token)
+    const { token } = res.data;
+    console.log("actions.js::authenticate() ", token);
     await createSession(token);
   } catch (error) {
     console.log(error);
@@ -280,56 +292,54 @@ export async function createCustomer(prevState, formData) {
   // redirect("/dashboard/customers")
 }
 
-
 export async function init() {
   return true;
 }
-
-
 
 //Create User Role
 export async function createRole(prevState, formData) {
   const session = await getSession();
   const token = session?.token;
-  setBearerToken(token)
-  const roleName = formData.get('roleName')
+  setBearerToken(token);
+  const roleName = formData.get("roleName");
   const data = {
-    "name": roleName
-  }
+    name: roleName,
+  };
 
-  const res = axios.post('roles', JSON.stringify(data))
-  .then((response) => {
-    return response.data.data
-  })
-  .catch((error) => {
-    console.log("error creating role: ", error)
-    return "error creating role"
-  })
-  console.log("role created: ", res)
-  redirect("/dashboard/roles")
+  const res = axios
+    .post("roles", JSON.stringify(data))
+    .then((response) => {
+      return response.data.data;
+    })
+    .catch((error) => {
+      console.log("error creating role: ", error);
+      return "error creating role";
+    });
+  console.log("role created: ", res);
+  redirect("/dashboard/roles");
 }
 
 //Create User Role
 export async function createWorkspace(prevState, formData) {
   const session = await getSession();
   const token = session?.token;
-  setBearerToken(token)
-  const workspaceName = formData.get('workspaceName')
+  setBearerToken(token);
+  const workspaceName = formData.get("workspaceName");
   const data = {
-    "name": workspaceName
-  }
+    name: workspaceName,
+  };
 
-  const res = axios.post('workspaces', JSON.stringify(data))
-  .then((response) => {
-    return response.data.data
-  })
-  .catch((error) => {
-    console.log("error creating workspace: ", error)
-    return "error creating workspace"
-  })
-  redirect("/dashboard/workspaces")
+  const res = axios
+    .post("workspaces", JSON.stringify(data))
+    .then((response) => {
+      return response.data.data;
+    })
+    .catch((error) => {
+      console.log("error creating workspace: ", error);
+      return "error creating workspace";
+    });
+  redirect("/dashboard/workspaces");
 }
-
 
 //USERS
 
@@ -339,24 +349,59 @@ export async function createUser(prevState, formData) {
   const token = session?.token;
 
   try {
-    const { email, password, name, workspace_id } = Object.fromEntries(formData.entries());
+    const { email, password, name, department_id } = Object.fromEntries(
+      formData.entries()
+    );
     const response = await fetch(`${BASE_URL}register`, {
       method: "post",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`
+        Authorization: `Bearer ${token}`,
       },
-      body: JSON.stringify({ email, password, name, workspace_id }),
+      body: JSON.stringify({ email, password, name, department_id }),
     });
 
     if (!response.ok) {
       throw new Error(`Error: ${response.statusText}`);
     }
 
-    console.log("response: ", await response.json())
+    console.log("response: ", await response.json());
   } catch (error) {
     console.log(error);
     return `Bad request: ${error}`;
   }
   redirect("/dashboard/users?create=success");
+}
+
+export async function removeRoleFromUser(prevState, formData) {
+  const { userId, roleId } = Object.fromEntries(formData.entries());
+  console.log("user and role id: ", roleId);
+}
+export async function addRoleToUser(prevState, formData) {
+  "use server";
+  const session = await getSession();
+  const token = session?.token;
+  const { userId, roleId } = Object.fromEntries(formData.entries());
+  try {
+    console.log("data values: ", userId, roleId);
+
+    const response = await fetch(`${BASE_URL}users/${userId}/roles/${roleId}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Error: ${response.statusText}`);
+    }
+
+    const res = await response.json();
+    // console.log(res);
+  } catch (error) {
+    console.log(error);
+    return `Bad request: ${error}`;
+  }
+  redirect(`/dashboard/users/${userId}?success=1`);
 }

@@ -10,14 +10,13 @@ export default async function UsersTable({ users }) {
         Users
       </h1>
       <div className="flex gap-4 content-center">
-      <Search placeholder="Search users..." />
+        <Search placeholder="Search users..." />
         <Link
           className="bg-blue-800 p-4 py-2 rounded-full text-white"
           href="/dashboard/users/add"
         >
           create
         </Link>
-        
       </div>
 
       <div className="mt-6 flow-root">
@@ -35,7 +34,7 @@ export default async function UsersTable({ users }) {
                         <div className="mb-2 flex items-center">
                           <div className="flex items-center gap-3">
                             <Image
-                              src={'/zamnet.jpg'}
+                              src={"/zamnet.jpg"}
                               className="rounded-full"
                               alt={`${user.name}'s profile picture`}
                               width={28}
@@ -44,9 +43,7 @@ export default async function UsersTable({ users }) {
                             <p>{user.name}</p>
                           </div>
                         </div>
-                        <p className="text-sm text-gray-500">
-                          {user.email}
-                        </p>
+                        <p className="text-sm text-gray-500">{user.email}</p>
                       </div>
                     </div>
                     <div className="flex w-full items-center justify-between border-b py-5">
@@ -91,13 +88,16 @@ export default async function UsersTable({ users }) {
                       <td className="whitespace-nowrap bg-white py-5 pl-4 pr-3 text-sm text-black group-first-of-type:rounded-md group-last-of-type:rounded-md sm:pl-6">
                         <div className="flex items-center gap-3">
                           <Image
-                            src={'/zamnet.jpg'}
+                            src={"/zamnet.jpg"}
                             className="rounded-full"
                             alt={`${user.name}'s profile picture`}
                             width={28}
                             height={28}
                           />
-                          <p>{user.name}</p>
+
+                          <Link href={`users/${user.id}`}>
+                            <p>{user.name}</p>
+                          </Link>
                         </div>
                       </td>
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
@@ -105,11 +105,11 @@ export default async function UsersTable({ users }) {
                       </td>
 
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm">
-                        {user.roles[0]}
+                        {user.roles[0].name}
                       </td>
 
                       <td className="whitespace-nowrap bg-white px-4 py-5 text-sm group-first-of-type:rounded-md group-last-of-type:rounded-md">
-                        {user.defaultSpace.name}
+                        {user.department.name}
                       </td>
                     </tr>
                   ))}
