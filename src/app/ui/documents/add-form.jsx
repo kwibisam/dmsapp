@@ -2,9 +2,6 @@
 
 import Link from "next/link";
 import {
-  CheckIcon,
-  ClockIcon,
-  CurrencyDollarIcon,
   UserCircleIcon,
   DocumentIcon,
   PencilIcon,
@@ -179,7 +176,7 @@ export default function Form({ customers }) {
           ) : null}
         </div>
       </div>
-      
+
       <div className="mt-6 flex justify-end gap-4">
         <Link
           href="/dashboard/documents"

@@ -81,6 +81,7 @@ const UserDetailsForm = ({ user, workspaces, roles, departments }) => {
         <label htmlFor="name">Names:</label>
         <input
           value={user.name}
+          readOnly
           type="text"
           id="name"
           className="border px-4 py-2"
@@ -89,6 +90,7 @@ const UserDetailsForm = ({ user, workspaces, roles, departments }) => {
         <label htmlFor="email">Email:</label>
         <input
           value={user.email}
+          readOnly
           type="email"
           id="email"
           className="border px-4 py-2"

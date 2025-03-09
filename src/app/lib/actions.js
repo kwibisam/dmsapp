@@ -56,20 +56,33 @@ export async function uploadDocument(prevState, formData) {
 
   const tags = formData.getAll("tag").join();
   formData.set("tag", tags);
+  formData.set("isFile", true);
+  // const { email, password } = Object.fromEntries(formData.entries());
+  console.log(
+    "actions.js::uploadDocument: ",
+    Object.fromEntries(formData.entries())
+  );
+
   setBearerToken(token);
-  const document = await axios
-    .post("documents", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    })
-    .then(async (response) => {
-      const data = await response.data;
-      return data.data;
-    })
-    .catch((error) => {
-      return `Error: Failed to add document. ${error}`;
-    });
+  let document = null;
+  try {
+    document = await axios
+      .post("documents", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then(async (response) => {
+        const data = await response.data;
+        return data.data;
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+  } catch (error) {
+    console.log("action.js::uploadDocument() ", error);
+    return `Error: Failed to add document. ${error}`;
+  }
   console.log("created document: ", document);
   redirect(`/dashboard/documents/${document.id}`);
 }
