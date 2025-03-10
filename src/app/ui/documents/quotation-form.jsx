@@ -3,7 +3,7 @@ import { axios, setBearerToken } from "@/app/lib/axios";
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
-const QuotationForm = ({ meta, token, workspace_id }) => {
+const QuotationForm = ({ meta, token }) => {
   const router = useRouter();
   const [errorMessage, setErrorMessage] = useState("");
   const [isPending, setIsPending] = useState(false);
@@ -22,9 +22,7 @@ const QuotationForm = ({ meta, token, workspace_id }) => {
     },
     date: "",
     reference: "",
-    items: [
-      { id: "", description: "", quantity: 0, unitPrice: 0, total: 0 },
-    ],
+    items: [{ id: "", description: "", quantity: 0, unitPrice: 0, total: 0 }],
     totalZMW: 0,
     subTotalZMW: 0,
     VAT: 0,
@@ -56,7 +54,8 @@ const QuotationForm = ({ meta, token, workspace_id }) => {
 
     // Recalculate total if quantity or unitPrice changes
     if (field === "quantity" || field === "unitPrice") {
-      newItems[index].total = newItems[index].quantity * newItems[index].unitPrice;
+      newItems[index].total =
+        newItems[index].quantity * newItems[index].unitPrice;
     }
 
     setData((prevData) => ({
@@ -88,10 +87,10 @@ const QuotationForm = ({ meta, token, workspace_id }) => {
     const doc = {
       title: meta.title,
       tags: meta.tags.join(),
-      type: 1,
+      type_id: meta.documentType.id,
       content: JSON.stringify(data),
       isForm: true,
-      workspace_id: workspace_id,
+      workspace_id: meta.workspace_id,
     };
 
     try {
@@ -136,7 +135,9 @@ const QuotationForm = ({ meta, token, workspace_id }) => {
             <input
               key={key}
               className="border px-4 py-2"
-              type={key === "email" ? "email" : key === "phone" ? "tel" : "text"}
+              type={
+                key === "email" ? "email" : key === "phone" ? "tel" : "text"
+              }
               name={key}
               placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
               value={value}
@@ -172,7 +173,9 @@ const QuotationForm = ({ meta, token, workspace_id }) => {
 
       {/* Items Section */}
       <fieldset className="mb-6">
-        <legend className="text-xl font-semibold mb-4 text-gray-700">Items</legend>
+        <legend className="text-xl font-semibold mb-4 text-gray-700">
+          Items
+        </legend>
         <div className="overflow-x-auto">
           <table className="w-full border-collapse border border-gray-300">
             <thead className="bg-gray-200">
@@ -219,7 +222,11 @@ const QuotationForm = ({ meta, token, workspace_id }) => {
                       className="w-full p-2 rounded border-none"
                       value={item.quantity}
                       onChange={(e) =>
-                        handleItemChange(index, "quantity", parseFloat(e.target.value))
+                        handleItemChange(
+                          index,
+                          "quantity",
+                          parseFloat(e.target.value)
+                        )
                       }
                     />
                   </td>
@@ -231,7 +238,11 @@ const QuotationForm = ({ meta, token, workspace_id }) => {
                       className="w-full p-2 rounded border-none"
                       value={item.unitPrice}
                       onChange={(e) =>
-                        handleItemChange(index, "unitPrice", parseFloat(e.target.value))
+                        handleItemChange(
+                          index,
+                          "unitPrice",
+                          parseFloat(e.target.value)
+                        )
                       }
                     />
                   </td>
@@ -289,7 +300,9 @@ const QuotationForm = ({ meta, token, workspace_id }) => {
             <input
               key={key}
               className="border px-4 py-2"
-              type={key === "email" ? "email" : key === "phone" ? "tel" : "text"}
+              type={
+                key === "email" ? "email" : key === "phone" ? "tel" : "text"
+              }
               name={key}
               placeholder={key.charAt(0).toUpperCase() + key.slice(1)}
               value={value}

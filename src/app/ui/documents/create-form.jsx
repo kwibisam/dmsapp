@@ -7,19 +7,28 @@ import ContractForm from "./contract-form";
 import ReportForm from "./report-form";
 
 const formComponents = {
-  quotation: QuotationForm,
-  serviceRequest: ServiceRequestForm,
-  contract: ContractForm,
-  report: ReportForm,
+  Quotation: QuotationForm,
+  ServiceRequest: ServiceRequestForm,
+  Contract: ContractForm,
+  Report: ReportForm,
 };
 
-const DocumentWizard = ({token}) => {
+const CreateDocForm = ({ token, user, tags, documentTypes }) => {
   const [currentStep, setCurrentStep] = useState(0);
+
+  const [selectedWorkspace, setSelectedWorkspace] = useState(
+    user?.workspaces[0]?.id
+  );
+
+  const handleWorkspaceSelectChange = (e) => {
+    setSelectedWorkspace(e.target.value);
+  };
 
   const [docData, setDocData] = useState({
     title: "",
-    documentType: "",
+    documentType: null,
     tags: [],
+    workspace_id: selectedWorkspace,
   });
 
   const steps = ["Document Info", "Form Details"];
@@ -28,8 +37,21 @@ const DocumentWizard = ({token}) => {
     setDocData((prev) => ({ ...prev, [field]: value }));
   };
 
-  const goToNext = () =>
+  const toggleTagSelection = (tagId) => {
+    setDocData((prev) => {
+      const isSelected = prev.tags.includes(tagId);
+      return {
+        ...prev,
+        tags: isSelected
+          ? prev.tags.filter((id) => id !== tagId) // Remove if already selected
+          : [...prev.tags, tagId], // Add if not selected
+      };
+    });
+  };
+
+  const goToNext = () => {
     setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
+  };
   const goToPrevious = () => setCurrentStep((prev) => Math.max(prev - 1, 0));
 
   const renderDocumentInfo = () => (
@@ -44,19 +66,53 @@ const DocumentWizard = ({token}) => {
       />
 
       <div className="mb-4">
+        <p>Select Workspace:</p>
+        <select
+          value={selectedWorkspace}
+          onChange={handleWorkspaceSelectChange}
+          name="workspace_id"
+          id=""
+        >
+          {user.workspaces?.map((workspace) => (
+            <option key={workspace.id} value={workspace.id}>
+              {workspace.name}
+            </option>
+          ))}
+        </select>
+      </div>
+      <div className="mb-4">
         <p>Select Form Type:</p>
-        {["quotation", "serviceRequest", "contract", "report"].map((type) => (
+        {documentTypes.map((type) => (
           <button
-            key={type}
+            key={type.id}
             onClick={() => updateField("documentType", type)}
             className={`mr-2 px-4 py-2 rounded ${
-              docData.documentType === type
+              docData.documentType?.id === type.id
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200"
             }`}
           >
-            {type.charAt(0).toUpperCase() + type.slice(1)}
+            {type.name.charAt(0).toUpperCase() + type.name.slice(1)}
           </button>
+        ))}
+      </div>
+
+      <div className="mb-4">
+        <p>Choose tags</p>
+        {tags.map((tag) => (
+          <div key={tag.id} className="flex items-center space-x-2 mt-2">
+            <input
+              type="checkbox"
+              id={`tag-${tag.id}`}
+              value={tag.id}
+              checked={docData.tags.includes(tag.id)}
+              onChange={() => toggleTagSelection(tag.id)}
+              className="h-5 w-5 text-blue-600 focus:ring-blue-500"
+            />
+            <label htmlFor={`tag-${tag.id}`} className="text-gray-700">
+              {tag.name}
+            </label>
+          </div>
         ))}
       </div>
       <button
@@ -70,7 +126,7 @@ const DocumentWizard = ({token}) => {
   );
 
   const renderFormDetails = () => {
-    const FormComponent = formComponents[docData.documentType];
+    const FormComponent = formComponents[docData.documentType.name];
     if (!FormComponent) return <p>Unsupported form type selected.</p>;
     return (
       <div>
@@ -111,4 +167,4 @@ const DocumentWizard = ({token}) => {
   );
 };
 
-export default DocumentWizard;
+export default CreateDocForm;

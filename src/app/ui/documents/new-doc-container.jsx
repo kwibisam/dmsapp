@@ -341,17 +341,17 @@ const NewDocContainer = ({ types, tags, token, user }) => {
                       WorkSpace
                     </legend>
                     <select
-                      name="type"
+                      name="workspace_id"
                       id="type"
                       className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                     >
-                      {types.map((type, indx) => (
+                      {user.workspaces?.map((workspace, indx) => (
                         <option
                           key={indx}
-                          value={type.id}
+                          value={workspace.id}
                           className="text-gray-700"
                         >
-                          {type.name}
+                          {workspace.name}
                         </option>
                       ))}
                     </select>
@@ -454,7 +454,12 @@ const NewDocContainer = ({ types, tags, token, user }) => {
             </>
           ) : modalType === "form" ? (
             <>
-              <CreateDocForm token={token} />
+              <CreateDocForm
+                token={token}
+                user={user}
+                documentTypes={types}
+                tags={tags}
+              />
             </>
           ) : null}
         </div>

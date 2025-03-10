@@ -21,30 +21,27 @@ export async function createDocument(prevState, formData) {
   const data = {
     title: formData.get("title"),
     tags: formData.getAll("tag").join(","),
-    type: formData.get("type"),
-    content: content,
-    isForm: false,
+    type_id: formData.get("type"),
+    workspace_id: formData.get("workspace_id"),
+    content: "",
+    isEditable: true,
   };
 
+  console.log("action.js::createDocument() ", data);
   setBearerToken(token);
   let document = null;
   try {
-    const response = await axios.post("documents", data);
-    document = response.data.data;
-
-    console.log("Created document: ", document);
-
-    if (document.title) {
-      // return {
-      //   success: true,
-      //   message: "Document created successfully!",
-      //   document,
-      // };
-    } else {
-      return "Failed to create document: Invalid response from server";
-    }
+    await axios
+      .post("documents", data)
+      .then((response) => {
+        document = response.data.data;
+        // console.log("then: ", document);
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
   } catch (error) {
-    console.error("Axios error creating document: ", error);
+    console.error("action.js::createDocument error: ", error);
     return `Failed to add document: ${error.message || "Unknown error"}`;
   }
   redirect(`/dashboard/documents/${document.id}?new=true`);
@@ -108,6 +105,7 @@ export async function updateDocContent(id, outputData) {
     }
     return true;
   } catch (error) {
+    console.log("action.js::updateDocContent ", error);
     return false;
   }
 }

@@ -11,15 +11,13 @@ const DocumentForm = ({ initialData = null, token }) => {
     file: null,
   });
 
-  // Populate form with initial data if provided
   useEffect(() => {
     console.log("initial data: ", initialData);
     if (initialData) {
       setData({
-        title: initialData.title || "",
-        description: initialData.description || "",
+        title: initialData.document.title || "",
         tags: initialData.tags || "",
-        file: null, // File inputs cannot be pre-filled
+        file: null,
       });
     }
   }, [initialData]);
@@ -97,20 +95,6 @@ const DocumentForm = ({ initialData = null, token }) => {
               onChange={handleChange}
               required
               id="title"
-            />
-          </div>
-
-          <div className="mb-4 ml-4 flex gap-4">
-            <label className="w-60" htmlFor="desc">
-              Description
-            </label>
-            <input
-              className="border flex-1"
-              type="text"
-              name="description"
-              id="desc"
-              value={data.description}
-              onChange={handleChange}
             />
           </div>
 

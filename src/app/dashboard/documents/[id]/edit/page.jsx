@@ -1,4 +1,4 @@
-import { fetchDocumentById, fetchDocumentsById } from "@/app/lib/data";
+import { fetchDocumentById, fetchDocumentTags } from "@/app/lib/data";
 import { getSession } from "@/app/lib/session";
 import Breadcrumbs from "@/app/ui/documents/breadcrumb";
 import DocumentForm from "@/app/ui/documents/doc-form";
@@ -9,7 +9,11 @@ const DocumentEdit = async ({ params }) => {
   const session = await getSession();
   const token = session?.token;
   const document = await fetchDocumentById(id);
-  console.log("edit document: ", document);
+  const tags = await fetchDocumentTags();
+  const data = {
+    document,
+    tags,
+  };
   return (
     <div>
       <Breadcrumbs
@@ -24,7 +28,7 @@ const DocumentEdit = async ({ params }) => {
       />
 
       <div>
-        <DocumentForm token={token} initialData={document} />
+        <DocumentForm token={token} initialData={data} />
       </div>
     </div>
   );
