@@ -12,21 +12,23 @@ import { useActionState } from "react";
 import { lusitana } from "./fonts";
 import ZamnetLogo from "./zamnet-logo";
 
-const LoginForm = () => {
+const LoginForm = ({ callback, signature }) => {
+  const authenticateWithCallBack = authenticate.bind(null, {
+    callback,
+    signature,
+  });
   const [errorMessage, formAction, isPending] = useActionState(
-    authenticate,
+    authenticateWithCallBack,
     undefined
   );
   return (
     <form action={formAction} className="space-y-3 h-full">
       <div className="flex-1 flex flex-col gap-10 rounded-lg bg-gray-50 px-6 pb-4 pt-8 bg-opacity-95">
-        
-
         <div>
-          <ZamnetLogo className="text-blue-800 mb-4"/>
+          <ZamnetLogo className="text-blue-800 mb-4" />
           <h1 className={`${lusitana.className} mb-3 text-2xl text-center`}>
-          Please log in to continue.
-        </h1>
+            Please log in to continue.
+          </h1>
         </div>
 
         <div className="w-full">

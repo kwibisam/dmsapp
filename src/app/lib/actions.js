@@ -89,7 +89,7 @@ export async function updateDocContent(id, outputData) {
   const token = session?.token;
   try {
     const data = {
-      content: outputData,
+      content: JSON.stringify(outputData),
     };
     const response = await fetch(`${BASE_URL}documents/${id}`, {
       method: "PUT",
@@ -235,8 +235,11 @@ export async function deleteDocumentById(prevState, formData) {
   redirect("/dashboard/documents");
 }
 
-export async function authenticate(prevState, formData) {
-  "use server";
+export async function authenticate(url, prevState, formData) {
+  const { callback, signature } = url;
+  console.log("callback: ", callback);
+  console.log("signature: ", signature);
+
   try {
     const { email, password } = Object.fromEntries(formData.entries());
     const response = await fetch(`${BASE_URL}login`, {
@@ -264,7 +267,18 @@ export async function authenticate(prevState, formData) {
     console.log(error);
     return `Bad request: ${error}`;
   }
-  redirect("/dashboard");
+  // redirect("/dashboard");
+
+  // redirect(callback ? decodeURIComponent(callback) : "/dashboard");
+  // Construct the redirect URL
+  const redirectUrl = callback
+    ? `${decodeURIComponent(callback)}&signature=${encodeURIComponent(
+        signature
+      )}`
+    : `/dashboard?signature=${encodeURIComponent(signature)}`;
+
+  // Perform the redirect
+  redirect(redirectUrl);
 }
 
 export async function logout(prevState, formData) {
@@ -355,35 +369,59 @@ export async function createWorkspace(prevState, formData) {
 //USERS
 
 //create user
+// export async function createUser(prevState, formData) {
+//   const session = await getSession();
+//   const token = session?.token;
+//   setBearerToken(token);
+//   const { email, password, name, department_id } = Object.fromEntries(
+//     formData.entries()
+//   );
+//   let user = null;
+//   try {
+//     axios
+//       .post(
+//         "register",
+//         JSON.stringify({ email, password, name, department_id })
+//       )
+//       .then(async (response) => {
+//         user = response.data.data;
+//       })
+//       .catch((error) => {
+//         throw new Error(error.response.data.message);
+//       });
+//   } catch (error) {
+//     console.log("action.js::createUser error: ", error);
+//     return `Bad request: ${error}`;
+//   }
+
+//   if (user) {
+//     redirect("/dashboard/users?create=success");
+//   }
+// }
+
 export async function createUser(prevState, formData) {
   const session = await getSession();
   const token = session?.token;
+  setBearerToken(token);
+
+  const { email, password, name, department_id } = Object.fromEntries(
+    formData.entries()
+  );
 
   try {
-    const { email, password, name, department_id } = Object.fromEntries(
-      formData.entries()
+    const response = await axios.post(
+      "register",
+      JSON.stringify({ email, password, name, department_id })
     );
-    const response = await fetch(`${BASE_URL}register`, {
-      method: "post",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ email, password, name, department_id }),
-    });
 
-    if (!response.ok) {
-      throw new Error(`Error: ${response.statusText}`);
-    }
-
-    console.log("response: ", await response.json());
+    // return response.data.data; // Optional: Return data if needed
   } catch (error) {
-    console.log(error);
-    return `Bad request: ${error}`;
+    console.error("action.js::createUser error:", error);
+    const errorMessage = error.response?.data?.message || error.message;
+    return `Bad request: ${errorMessage}`;
   }
   redirect("/dashboard/users?create=success");
 }
-
 export async function removeRoleFromUser(prevState, formData) {
   const { userId, roleId } = Object.fromEntries(formData.entries());
   console.log("user and role id: ", roleId);
@@ -415,4 +453,31 @@ export async function addRoleToUser(prevState, formData) {
     return `Bad request: ${error}`;
   }
   redirect(`/dashboard/users/${userId}?success=1`);
+}
+
+export async function verifyEmail(url, prevState, formData) {
+  const session = await getSession();
+  const token = session?.token;
+  setBearerToken(token);
+
+  console.log("Here is the url ", url);
+  let data = null;
+  try {
+    data = await axios
+      .get(url)
+      .then((response) => {
+        console.log(response.data.data);
+        return response.data.data;
+      })
+      .catch((error) => {
+        throw new Error(error.response.data.message);
+      });
+  } catch (error) {
+    console.log("actions.js::verifyEmail()", error);
+    return `error: ${error}`;
+  }
+
+  if (data) {
+    redirect("/");
+  }
 }

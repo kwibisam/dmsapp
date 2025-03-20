@@ -3,8 +3,9 @@ import Breadcrumbs from "@/app/ui/documents/breadcrumb";
 import Editor from "@/app/ui/documents/editor";
 import { fetchDocumentById } from "@/app/lib/data";
 import QuotationView from "@/app/ui/documents/quotation-view";
+import Link from "next/link";
 const DocumentDetails = async ({ params, searchParams }) => {
-  const { id: docId } = await params; // Await params here
+  const { id: docId } = await params;
   const { new: isNew } = await searchParams;
   const document = await fetchDocumentById(docId);
 
@@ -13,6 +14,7 @@ const DocumentDetails = async ({ params, searchParams }) => {
   }, document.versions[0]);
 
   console.log("document details latest version: ", documentLatestVersion);
+  console.log("document details: ", document);
   return (
     <div className="max-w-4xl mx-auto p-6">
       <Breadcrumbs
@@ -47,14 +49,20 @@ const DocumentDetails = async ({ params, searchParams }) => {
       {document.isEditable && (
         <div>
           {isNew ? (
-            <Editor docId={docId} />
-          ) : (
-            // <EditorRender data={content} />
             <Editor
               docId={docId}
               data={JSON.parse(documentLatestVersion.content)}
-              readonly={true}
             />
+          ) : (
+            // <EditorRender data={content} />
+            <div>
+              <Link href={`${docId}/edit`}>edit</Link>
+              <Editor
+                docId={docId}
+                data={JSON.parse(documentLatestVersion.content)}
+                readonly={true}
+              />
+            </div>
           )}
         </div>
       )}

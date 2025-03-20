@@ -1,6 +1,6 @@
 "use client";
 import { axios, setBearerToken } from "@/app/lib/axios";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 
 const QuotationForm = ({ meta, token }) => {
@@ -33,6 +33,13 @@ const QuotationForm = ({ meta, token }) => {
     },
     termsAndConditions: "",
   });
+
+  // Item row component with break prevention
+  const ItemRow = ({ item, index }) => (
+    <tr className="item-row" style={{ breakInside: "avoid" }}>
+      {/* ... existing item row implementation ... */}
+    </tr>
+  );
 
   const VAT_RATE = 0.16;
 

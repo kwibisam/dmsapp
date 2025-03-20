@@ -7,7 +7,6 @@
   --foreground: #122339;
 }
 
-
 body {
   color: var(--foreground);
   background: var(--background);
@@ -18,49 +17,40 @@ h1 {
   color: #122339;
 }
 
-
 /* REQUIRED STYLES */
 
-
-.ce-editorjsColumns_col{
+.ce-editorjsColumns_col {
   flex: 50%;
 }
 
-
-
-
-.ce-editorjsColumns_wrapper{
+.ce-editorjsColumns_wrapper {
   display: flex;
-  width:100%;
+  width: 100%;
   gap: 10px;
   margin-bottom: 10px;
   flex-direction: row;
 
-  .ce-toolbar__actions{
-    z-index:0;
+  .ce-toolbar__actions {
+    z-index: 0;
   }
 
-  .ce-toolbar{
+  .ce-toolbar {
     z-index: 4;
   }
 
-  .ce-popover{
+  .ce-popover {
     z-index: 4000;
   }
-
-  
 }
 
 @media (max-width: 800px) {
   .ce-editorjsColumns_wrapper {
     flex-direction: column;
-    padding:10px;
+    padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
   }
 }
-
-
 
 /* 
 
@@ -68,18 +58,20 @@ These styles will also affect the parent editor!!!!!!
 
 */
 
-.ce-inline-toolbar{
-  z-index:1000
+.ce-inline-toolbar {
+  z-index: 1000;
 }
 
-.ce-block__content, 
+.ce-block__content,
 .ce-toolbar__content {
-  max-width: calc(100% - 50px);  /* example value, adjust for your own use case */
+  max-width: calc(
+    100% - 50px
+  ); /* example value, adjust for your own use case */
 }
 
 /*   */
-.ce-toolbar__actions{
-  right: calc(100% + 30px); 
+.ce-toolbar__actions {
+  right: calc(100% + 30px);
   background-color: rgba(255, 255, 255, 0.5);
   border-radius: 4px;
 }
@@ -87,16 +79,33 @@ These styles will also affect the parent editor!!!!!!
 /* Would be better to remove --narrow mode */
 /* Issue Raised */
 /* // This causes an error which is good i think? */
-.codex-editor--narrow .codex-editor__redactor{
+.codex-editor--narrow .codex-editor__redactor {
   margin: 0;
 }
 
 /* Required to prevent clipping */
-.ce-toolbar{
+.ce-toolbar {
   z-index: 4;
 }
 
-.codex-editor{
+.codex-editor {
   /* background:#f00 !important; */
-  z-index: auto !important; 
+  z-index: auto !important;
+}
+
+.document {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.page {
+  width: 600px;
+  height: 500px;
+  border: 1px solid black;
+  padding: 20px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  background: white;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
