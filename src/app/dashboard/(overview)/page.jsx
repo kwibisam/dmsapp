@@ -42,7 +42,7 @@ const DashboardHome = async () => {
             </h2>
             <ul className="space-y-2">
               {recentDocuments.map((document) => (
-                <li className="flex justify-between">
+                <li key={document.id} className="flex justify-between">
                   <span>{document.title}</span>
                   <span className="text-gray-500">3 days ago</span>
                 </li>

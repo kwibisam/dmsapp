@@ -51,6 +51,7 @@ export async function fetchRecentDocuments(currentPage) {
     })
     .catch((error) => {
       console.log("failed to fetch documents: ", error);
+      throw new Error(error);
     });
   return documents;
 }

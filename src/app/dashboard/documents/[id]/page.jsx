@@ -13,8 +13,6 @@ const DocumentDetails = async ({ params, searchParams }) => {
     return version.version_number > latest.version_number ? version : latest;
   }, document.versions[0]);
 
-  console.log("document details latest version: ", documentLatestVersion);
-  console.log("document details: ", document);
   return (
     <div className="max-w-4xl mx-auto p-6">
       <Breadcrumbs
@@ -28,44 +26,43 @@ const DocumentDetails = async ({ params, searchParams }) => {
         ]}
       />
 
-      {document.isForm && (
-        <div>
+      {/* document content */}
+      <div className="bg-gray-100">
+        {document.isForm && (
           <QuotationView data={JSON.parse(documentLatestVersion.content)} />
-        </div>
-      )}
+        )}
 
-      {document.isFile && (
-        <div>
+        {document.isFile && (
           <embed
             src={documentLatestVersion.file_path}
             width="100%"
-            height="400px"
+            height="600px"
             type="application/pdf"
             className="border rounded-lg overflow-hidden"
           />
-        </div>
-      )}
+        )}
 
-      {document.isEditable && (
-        <div>
-          {isNew ? (
-            <Editor
-              docId={docId}
-              data={JSON.parse(documentLatestVersion.content)}
-            />
-          ) : (
-            // <EditorRender data={content} />
-            <div>
-              <Link href={`${docId}/edit`}>edit</Link>
+        {document.isEditable && (
+          <div>
+            {isNew ? (
               <Editor
                 docId={docId}
                 data={JSON.parse(documentLatestVersion.content)}
-                readonly={true}
               />
-            </div>
-          )}
-        </div>
-      )}
+            ) : (
+              // <EditorRender data={content} />
+              <div>
+                <Link href={`${docId}/edit`}>edit</Link>
+                <Editor
+                  docId={docId}
+                  data={JSON.parse(documentLatestVersion.content)}
+                  readonly={true}
+                />
+              </div>
+            )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

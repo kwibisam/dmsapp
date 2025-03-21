@@ -182,10 +182,10 @@ const NewDocContainer = ({ types, tags, token, user }) => {
                     htmlFor="file-upload"
                     className="text-blue-600 hover:text-blue-700 cursor-pointer"
                   >
-                    Click to upload or drag and drop
+                    Click to upload
                   </label>
                   <p className="mt-2 text-sm text-gray-500">
-                    Supported formats: PDF, DOC, DOCX
+                    Supported formats: PDF
                   </p>
                   {selectedFileName && (
                     <p className="mt-2 text-sm text-gray-700">
