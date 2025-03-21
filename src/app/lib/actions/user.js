@@ -130,3 +130,66 @@ export async function updateUserDepartment(userId, departmentId) {
 
   redirect(`/dashboard/users/${userId}`);
 }
+
+export async function updatePassword(userId, prevState, formData) {
+  const { current_password, new_password } = Object.fromEntries(
+    formData.entries()
+  );
+  const session = await getSession();
+  const token = session?.token;
+  setBearerToken(token);
+  let success = null;
+  try {
+    success = await axios.post(
+      `change-password/${userId}`,
+      JSON.stringify({ current_password, new_password })
+    );
+  } catch (error) {
+    console.log("user.actions.js::updatePassword() ", error.response);
+    return `${error.response.data.message}`;
+  }
+  if (success) {
+    console.log("user.actions.js::updatePassword() ", success);
+    redirect("/dashboard/profile?success=1");
+  }
+}
+
+export async function resetPassword(data, prevState, formData) {
+  const { password, confirm_password } = Object.fromEntries(formData.entries());
+  const { email, token } = data;
+  console.log("resetPassword() ", password, confirm_password, data);
+  let success = null;
+  try {
+    success = await axios.post(
+      "reset-password",
+      JSON.stringify({ email, token, password, confirm_password })
+    );
+  } catch (error) {
+    console.log(error.response);
+    return `${error.response.data.message}`;
+  }
+  if (success) {
+    redirect("/login");
+  }
+}
+
+export async function forgotPassword(email) {
+  try {
+    const r = await axios
+      .post("forgot-password", { email })
+      .then((response) => {
+        console.error("Forgot password error:", response.data);
+        if (response.status === 200) {
+          return true;
+        }
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
+
+    return r;
+  } catch (error) {
+    console.error("Forgot password error:", error.response.data);
+    return false;
+  }
+}

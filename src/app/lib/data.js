@@ -141,7 +141,6 @@ export async function fetchUser() {
       .get(`user`)
       .then((response) => {
         const res = response.data;
-        console.log("fetchUser:: ", res.data);
         return res.data;
       })
       .catch((error) => {

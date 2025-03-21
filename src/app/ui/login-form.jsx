@@ -11,6 +11,7 @@ import { Button } from "./button";
 import { useActionState } from "react";
 import { lusitana } from "./fonts";
 import ZamnetLogo from "./zamnet-logo";
+import Link from "next/link";
 
 const LoginForm = ({ callback, signature }) => {
   const authenticateWithCallBack = authenticate.bind(null, {
@@ -69,6 +70,10 @@ const LoginForm = ({ callback, signature }) => {
                 minLength={4}
               />
               <KeyIcon className="pointer-events-none absolute left-3 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-gray-500 peer-focus:text-gray-900" />
+            </div>
+
+            <div>
+              <Link href="/forgot-password">forgot password</Link>
             </div>
           </div>
         </div>

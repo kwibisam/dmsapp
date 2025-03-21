@@ -1,3 +1,5 @@
+import { UserCircleIcon } from "@heroicons/react/20/solid";
+import Link from "next/link";
 import React from "react";
 
 const DashboardHome = () => {
@@ -13,7 +15,9 @@ const DashboardHome = () => {
             className="p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 outline-none"
           />
           <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-            <span>👤</span>
+            <Link href="/dashboard/profile">
+              <UserCircleIcon className="h-12 w-12 rotate-[15deg]" />
+            </Link>
           </div>
         </div>
       </header>
@@ -24,21 +28,9 @@ const DashboardHome = () => {
           {/* Stats Cards */}
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
             <h2 className="text-lg font-semibold text-gray-700">
-              Total Documents
-            </h2>
-            <p className="text-4xl font-bold text-blue-600 mt-2">1,234</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <h2 className="text-lg font-semibold text-gray-700">
               Recent Uploads
             </h2>
             <p className="text-4xl font-bold text-blue-600 mt-2">45</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
-            <h2 className="text-lg font-semibold text-gray-700">
-              Pending Reviews
-            </h2>
-            <p className="text-4xl font-bold text-blue-600 mt-2">8</p>
           </div>
 
           {/* Recent Documents */}

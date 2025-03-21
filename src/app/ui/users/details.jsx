@@ -17,6 +17,7 @@ import UpdateUserWorkspaceButton from "./updateWorkspaceButton";
 import UpdateUserUserDepartmentButton from "../departments/update-department-button";
 
 const UserDetailsForm = ({ user, workspaces, roles, departments }) => {
+  console.log("user: ", user.department);
   const [selectedDepartment, setSelectedDepartment] = useState(
     user.department.id
   );

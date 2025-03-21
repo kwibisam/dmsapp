@@ -3,7 +3,6 @@ import NavLinks from "./nav-links";
 import ZamnetLogo from "../zamnet-logo";
 import LogoutButton from "../logout-button";
 export default function SideNav({ user }) {
-  console.log("side-nav.js:: ", user);
   return (
     <div className="nav flex h-full flex-col px-3 py-4 md:px-2">
       <Link
@@ -11,7 +10,10 @@ export default function SideNav({ user }) {
         href="/"
       >
         <div className="w-32 text-white md:w-40">
-          <ZamnetLogo />
+          <div className="flex justify-between items-center">
+            <p className="text-[28px] uppercase">Zamnet</p>
+          </div>
+
           <h2 className="font-semibold uppercase">
             {" "}
             {user.department.name} -{" "}
