@@ -6,21 +6,6 @@ const ITEMS_PER_PAGE = 6;
 
 const BASE_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
-// export async function fetchDocumentTypes() {
-//   const session = await getSession()
-//   const token = session?.token
-//   setBearerToken(token)
-//   const types = axios.get('types')
-//     .then(async (response) => {
-//       const result = await response.data
-//       return result.data
-//     })
-//     .catch((error) => {
-//       console.log("fetchDocumentTypes(): ", error)
-//     })
-//   return types
-// }
-
 export async function fetchAllDocuments(currentPage) {
   const session = await getSession();
   const token = session?.token;

@@ -2,18 +2,21 @@
 import { updatePassword } from "@/app/lib/actions/user";
 import React, { useActionState, useState } from "react";
 
-const UserProfileDetails = ({ user }) => {
+const UserProfileDetails = ({ user, isAdmin }) => {
   const [modal, setModal] = useState(false);
   const updatePasswordWithId = updatePassword.bind(null, user.id);
   const [errorMessage, formAction, isPending] = useActionState(
     updatePasswordWithId,
     undefined
   );
+
+  console.log("user: ", user);
   return (
     <div>
       <div>
         <p>Name: {user.name}</p>
         <p>Role: {user.roles[0].name}</p>
+        <p>isAdmin: {isAdmin}</p>
       </div>
 
       <div>

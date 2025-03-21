@@ -5,8 +5,8 @@ import React from "react";
 
 const UserProfilePage = async ({ searchParams }) => {
   const success = (await searchParams).success;
-  console.log("password change: ", success);
   const user = await fetchUser();
+  console.log("userProfile: ", user);
   return (
     <div className="relative">
       {success && (
@@ -16,7 +16,7 @@ const UserProfilePage = async ({ searchParams }) => {
         </div>
       )}
       <h1>User Profile</h1>
-      <UserProfileDetails user={user} />
+      <UserProfileDetails user={user} isAdmin={user.isAdmin} />
     </div>
   );
 };

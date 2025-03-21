@@ -1,8 +1,10 @@
+import { fetchRecentDocuments } from "@/app/lib/actions/documents";
 import { UserCircleIcon } from "@heroicons/react/20/solid";
 import Link from "next/link";
 import React from "react";
 
-const DashboardHome = () => {
+const DashboardHome = async () => {
+  const recentDocuments = await fetchRecentDocuments();
   return (
     <main className="flex flex-col h-screen bg-gray-100">
       {/* Top Bar */}
@@ -28,7 +30,7 @@ const DashboardHome = () => {
           {/* Stats Cards */}
           <div className="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition">
             <h2 className="text-lg font-semibold text-gray-700">
-              Recent Uploads
+              {/* Recent Uploads */}
             </h2>
             <p className="text-4xl font-bold text-blue-600 mt-2">45</p>
           </div>
@@ -39,18 +41,12 @@ const DashboardHome = () => {
               Recent Documents
             </h2>
             <ul className="space-y-2">
-              <li className="flex justify-between border-b pb-2">
-                <span>Invoice_123.pdf</span>
-                <span className="text-gray-500">2 hours ago</span>
-              </li>
-              <li className="flex justify-between border-b pb-2">
-                <span>Contract_April.pdf</span>
-                <span className="text-gray-500">1 day ago</span>
-              </li>
-              <li className="flex justify-between">
-                <span>Quotation_456.pdf</span>
-                <span className="text-gray-500">3 days ago</span>
-              </li>
+              {recentDocuments.map((document) => (
+                <li className="flex justify-between">
+                  <span>{document.title}</span>
+                  <span className="text-gray-500">3 days ago</span>
+                </li>
+              ))}
             </ul>
           </div>
 
@@ -59,12 +55,20 @@ const DashboardHome = () => {
             <h2 className="text-lg font-semibold text-gray-700 mb-4">
               Quick Actions
             </h2>
-            <button className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition">
+
+            <Link
+              href="/dashboard/documents/new-document"
+              className="block text-center w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition"
+            >
               Add New Document
-            </button>
-            <button className="w-full mt-2 bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300 transition">
+            </Link>
+
+            <Link
+              href="/dashboard/documents"
+              className="block w-full text-center mt-2 bg-gray-200 text-gray-700 py-2 rounded-md hover:bg-gray-300 transition"
+            >
               View All Documents
-            </button>
+            </Link>
           </div>
         </div>
       </main>

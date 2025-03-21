@@ -56,6 +56,14 @@ const links = [
 export default function NavLinks({ user }) {
   const pathname = usePathname();
 
+  const role = user.isAdmin;
+  console.log("role check: ", role);
+  if (user.isAdmin === true) {
+    console.log("use is admin");
+  } else {
+    console.log("use is not admin");
+  }
+
   return (
     <>
       {links

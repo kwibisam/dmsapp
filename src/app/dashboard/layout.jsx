@@ -4,7 +4,6 @@ import { fetchUser } from "../lib/data";
 const DashboardLayout = async ({ children }) => {
   try {
     const user = await fetchUser();
-
     if (!user) {
       throw new Error("User not found");
     }
