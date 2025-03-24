@@ -237,9 +237,6 @@ export async function deleteDocumentById(prevState, formData) {
 
 export async function authenticate(url, prevState, formData) {
   const { callback, signature } = url;
-  console.log("callback: ", callback);
-  console.log("signature: ", signature);
-
   try {
     const { email, password } = Object.fromEntries(formData.entries());
     const response = await fetch(`${BASE_URL}login`, {
