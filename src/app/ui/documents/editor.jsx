@@ -5,7 +5,7 @@ import Header from "@editorjs/header";
 import Table from "@editorjs/table";
 import EditorJsColumns from "@/app/lib/editor-columns";
 import SimpleImage from "@editorjs/simple-image";
-
+import EditorjsList from "@editorjs/list";
 
 const Editor = ({ data, docId, readonly }) => {
   const [isMounted, setIsMounted] = useState(false);
@@ -17,22 +17,14 @@ const Editor = ({ data, docId, readonly }) => {
       const editor = new EditorJS({
         holder: "editorjs",
         tools: {
-          // columns : {
-          //   class : editorjsColumns,
-          //   config : {
-          //     tools : {
-          //       header: Header,
-          //       alert : Alert,
-          //       delimiter : Delimiter
-          //     },
-          //     EditorJsLibrary : EditorJS //ref EditorJS - This means only one global thing
-          //   }
-          // },
+          list: {
+            class: EditorjsList,
+          },
           header: {
-            class: Header
+            class: Header,
           },
           image: {
-            class: SimpleImage
+            class: SimpleImage,
           },
           table: {
             class: Table,
@@ -43,10 +35,10 @@ const Editor = ({ data, docId, readonly }) => {
               maxRows: 5,
               maxCols: 5,
             },
-          }
+          },
         },
         data: data,
-        readOnly: readonly
+        readOnly: readonly,
       });
       ref.current = editor;
     }
@@ -91,7 +83,10 @@ const Editor = ({ data, docId, readonly }) => {
   return (
     <>
       {!readonly && <button onClick={save}>save</button>}
-      <div id="editorjs" className="px-6 min-h-screen border border-blue-400"></div>
+      <div
+        id="editorjs"
+        className="px-6 h-screen border bg-white overflow-y-scroll border-blue-400"
+      ></div>
     </>
   );
 };
