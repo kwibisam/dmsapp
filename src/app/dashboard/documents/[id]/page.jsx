@@ -28,43 +28,6 @@ const DocumentDetails = async ({ params, searchParams }) => {
 
       {/* document content */}
 
-      {/* <div className="bg-gray-100">
-        {document.isForm && (
-          <QuotationView data={JSON.parse(documentLatestVersion.content)} />
-        )}
-
-        {document.isFile && (
-          <embed
-            src={documentLatestVersion.file_path}
-            width="100%"
-            height="600px"
-            type="application/pdf"
-            className="border rounded-lg overflow-hidden"
-          />
-        )}
-
-        {document.isEditable && (
-          <div>
-            {isNew ? (
-              <Editor
-                docId={docId}
-                data={JSON.parse(documentLatestVersion.content)}
-              />
-            ) : (
-              // <EditorRender data={content} />
-              <div>
-                <Link href={`${docId}/edit`}>edit</Link>
-                <Editor
-                  docId={docId}
-                  data={JSON.parse(documentLatestVersion.content)}
-                  readonly={true}
-                />
-              </div>
-            )}
-          </div>
-        )}
-      </div> */}
-
       <div>
         {document.isFile ? (
           <embed
